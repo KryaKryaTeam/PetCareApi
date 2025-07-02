@@ -7,6 +7,8 @@ services:
             - mongo
         networks:
             - mongo_net
+        ports:
+            - 3000:3000
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8
         environment:

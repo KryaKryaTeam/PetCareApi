@@ -7,7 +7,8 @@
         "skipLibCheck": true, // Skip type checking of declaration files for faster builds
         "forceConsistentCasingInFileNames": true,
         "outDir": "dist", // Output directory for compiled JS (optional)
-        "rootDir": "./" // Root directory of your source files
+        "rootDir": "./", // Root directory of your source files
+        "resolveJsonModule": true
     },
     "include": ["**/*.ts"], // Include all TS files in the project
     "exclude": ["node_modules", "dist"] // Exclude node_modules and build output folder

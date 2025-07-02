@@ -12,4 +12,6 @@ RUN npm install
 COPY . .
 
 # Start the app using nodemon
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "swagger"]
+CMD [ "npm", "run", "dev" ]
+
