@@ -1,0 +1,7 @@
+FROM node:24-alpine3.21
+
+WORKDIR /src
+
+COPY ./ ./src
+
+RUN npm install
