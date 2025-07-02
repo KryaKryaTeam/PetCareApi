@@ -1,0 +1,25 @@
+services:
+    main:
+        build: /server
+        volumes:
+            - ./server:/src
+        depends_on:
+            - mongo
+        networks:
+            - mongo_net
+    mongo:
+        image: mongodb/mongodb-community-server:6.0-ubi8
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=admin
+            - MONGO_INITDB_ROOT_PASSWORD=password12341234
+        volumes:
+            - type: bind
+              source: ./data
+              target: /data/db
+        networks:
+            - mongo_net
+        ports:
+            - "27017:27017"
+
+networks:
+    mongo_net:
