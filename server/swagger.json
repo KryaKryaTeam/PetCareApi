@@ -3,12 +3,140 @@
   "info": {
     "title": "Pet tracker API",
     "description": "API for pet tracker!",
-    "version": "1.0.0"
+    "version": "0.0.1-dev"
   },
   "host": "localhost:3000",
-  "basePath": "/",
+  "basePath": "/api/",
   "schemes": [
     "http"
   ],
-  "paths": {}
+  "paths": {
+    "/ping": {
+      "get": {
+        "tags": [
+          "System",
+          "NotSecured"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/animals/breed/{animalTypeName}": {
+      "get": {
+        "tags": [
+          "AnimalType",
+          "NotSecured"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "animalTypeName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AnimalType",
+          "Secured"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "animalTypeName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "breeds": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/animals/breed": {
+      "post": {
+        "tags": [
+          "AnimalType",
+          "Secured"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "icon": {
+                  "example": "any"
+                },
+                "breeds": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AnimalType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "cat"
+        },
+        "icon": {
+          "type": "string",
+          "example": "%backend%/images/%baseicon%"
+        },
+        "breeds": {
+          "type": "array",
+          "example": [
+            "first breed",
+            "secound breed"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
 }

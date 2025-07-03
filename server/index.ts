@@ -3,6 +3,7 @@ import cors from "cors"
 import mongoose from "mongoose"
 import swaggerUI from "swagger-ui-express"
 import swaggerDoc from "./swagger.json"
+import { router } from "./router"
 
 const app = express()
 app.use(
@@ -11,8 +12,9 @@ app.use(
         credentials: true,
     })
 )
-
+app.use(express.json())
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc))
+app.use("/api", router)
 
 async function connect() {
     try {

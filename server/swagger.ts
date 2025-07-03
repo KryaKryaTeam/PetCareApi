@@ -4,13 +4,22 @@ const doc = {
     info: {
         title: "Pet tracker API",
         description: "API for pet tracker!",
+        version: "0.0.1-dev",
     },
     host: "localhost:3000", // your server host
     schemes: ["http"], // or 'https'
+    basePath: "/api/",
+    definitions: {
+        AnimalType: {
+            name: "cat",
+            icon: "%backend%/images/%baseicon%",
+            breeds: ["first breed", "secound breed"],
+        },
+    },
     // you can add more Swagger config here
 }
 
 const outputFile = "./swagger.json" // where swagger file will be generated
-const endpointsFiles = ["./index.ts"] // your route files
+const endpointsFiles = ["./router.ts"] // your route files
 
 swaggerAutogen(outputFile, endpointsFiles, doc)
