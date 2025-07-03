@@ -5,7 +5,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "swagger": "npx ts-node swagger.ts",
-        "dev": "nodemon"
+        "dev": "npm run swagger && nodemon"
     },
     "keywords": [],
     "author": "",

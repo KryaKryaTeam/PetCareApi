@@ -15,9 +15,7 @@ services:
             - MONGO_INITDB_ROOT_USERNAME=admin
             - MONGO_INITDB_ROOT_PASSWORD=password12341234
         volumes:
-            - type: bind
-              source: ./data
-              target: /data/db
+            - mongo_data:/data/db
         networks:
             - mongo_net
         ports:
@@ -25,3 +23,6 @@ services:
 
 networks:
     mongo_net:
+
+volumes:
+    mongo_data:
