@@ -18,4 +18,14 @@ export class AnimalTypeService {
         const Animal_type = await AnimalTypeModel.findOne({ name })
         return Animal_type?.breeds || []
     }
+    static async getAllAnimalTypes(): Promise<AnimalType[]> {
+        const res = await AnimalTypeModel.find()
+        return res
+    }
+    static async deleteAnimalType(name: String): Promise<number> {
+        const animaltype_ = await AnimalTypeModel.findOne({ name })
+        if (!animaltype_) return 0
+        await animaltype_.deleteOne()
+        return 1
+    }
 }

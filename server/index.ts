@@ -4,11 +4,14 @@ import mongoose from "mongoose"
 import swaggerUI from "swagger-ui-express"
 import swaggerDoc from "./swagger.json"
 import { router } from "./router"
+import { config } from "dotenv"
+
+config()
 
 const app = express()
 app.use(
     cors({
-        origin: "http://localhost:3001/",
+        origin: "http://localhost:3001",
         credentials: true,
     })
 )
@@ -19,7 +22,7 @@ app.use("/api", router)
 async function connect() {
     try {
         console.log("TRY TO CONNECT!")
-        await mongoose.connect("mongodb://admin:password12341234@mongo:27017/mydatabase?authSource=admin").then(() => {
+        await mongoose.connect(process.env.MONGO_URL || "").then(() => {
             console.log("CONNECTED TO DB!")
         })
     } catch (err) {
@@ -30,6 +33,6 @@ async function connect() {
 
 connect()
 
-app.listen(3000, () => {
-    console.log("Server run on port 3000")
+app.listen(process.env.PORT || 3000, () => {
+    console.log("Server run on port ", process.env.PORT || 3000)
 })

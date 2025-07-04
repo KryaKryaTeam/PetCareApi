@@ -79,6 +79,20 @@
         }
       }
     },
+    "/animals/": {
+      "get": {
+        "tags": [
+          "AnimalType",
+          "NotSecured"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/animals/breed": {
       "post": {
         "tags": [
@@ -109,6 +123,31 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/animals/{animalTypeName}": {
+      "delete": {
+        "tags": [
+          "AnimalType",
+          "Secured"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "animalTypeName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }

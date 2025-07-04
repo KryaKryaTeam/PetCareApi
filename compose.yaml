@@ -3,12 +3,17 @@ services:
         build: /server
         volumes:
             - ./server:/src
+            - deps:/src/node_modules
         depends_on:
             - mongo
         networks:
             - mongo_net
         ports:
             - 3000:3000
+        environment:
+            - MONGO_URL=mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin
+            - PORT=3000
+        command: sh -c "npm run test; npm run swagger && npm run dev"
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8
         environment:
@@ -26,3 +31,5 @@ networks:
 
 volumes:
     mongo_data:
+    deps:
+    lock_file:

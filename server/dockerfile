@@ -1,16 +1,17 @@
 # Base image
-FROM node:24-alpine3.21
+FROM node:24.3-slim
+ENV NODE_ENV=development
 
-# Set working directory inside container
+RUN corepack enable && npm install -g npm@latest
+
 WORKDIR /src
 
-# Copy only necessary files
-COPY package*.json ./
-RUN npm install
+COPY package.json ./
+
+RUN npm i
 
 # Copy the rest of the server code into /src
 COPY . .
 
-# Start the app using nodemon
-CMD [ "npm", "run", "dev" ]
+
 
