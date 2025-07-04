@@ -4,8 +4,6 @@
 
 ### This is documentation for pet tracker api
 
-To get started, you need Docker (Docker Desktop on Windows).
-
 For start you need docker (Docker desktop on windows)
 
 In the console, run: `docker compose up --build`
