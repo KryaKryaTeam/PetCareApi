@@ -1,3 +1,16 @@
-## For start
+## Pet Tracker API
 
-Enter to console: ```docker compose up --build```
+![Version](https://img.shields.io/badge/version-0.0.1--dev-blue)
+
+### This is documentation for pet tracker api
+
+To get started, you need Docker (Docker Desktop on Windows).
+
+For start you need docker (Docker desktop on windows)
+
+In the console, run: `docker compose up --build`
+Or run `start.bat` on Windows.
+
+**Swagger docs**
+
+To view the Swagger docs, start the project and open http://localhost:3000/docs in your browser.

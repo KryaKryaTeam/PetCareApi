@@ -32,4 +32,3 @@ networks:
 volumes:
     mongo_data:
     deps:
-    lock_file:
