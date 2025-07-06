@@ -5,7 +5,8 @@
     "scripts": {
         "test": "vitest ./tests/",
         "swagger": "npx ts-node swagger.ts",
-        "dev": "nodemon"
+        "dev": "nodemon",
+        "start": "ts-node index.ts"
     },
     "keywords": [],
     "author": "",
