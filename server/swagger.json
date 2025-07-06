@@ -1,14 +1,15 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "Pet tracker API",
     "description": "API for pet tracker!",
-    "version": "0.0.1-dev"
+    "version": "0.0.2-dev"
   },
-  "host": "localhost:3000",
-  "basePath": "/api/",
-  "schemes": [
-    "http"
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "dynamic env‑based URL"
+    }
   ],
   "paths": {
     "/ping": {
@@ -25,50 +26,18 @@
         }
       }
     },
-    "/animals/breed/{animalTypeName}": {
-      "get": {
-        "tags": [
-          "AnimalType",
-          "NotSecured"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "animalTypeName",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
+    "/user/login/self": {
       "post": {
         "tags": [
-          "AnimalType",
-          "Secured"
+          "Auth"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "animalTypeName",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
+            "name": "user-agent",
+            "in": "header",
             "schema": {
-              "type": "object",
-              "properties": {
-                "breeds": {
-                  "example": "any"
-                }
-              }
+              "type": "string"
             }
           }
         ],
@@ -76,47 +45,38 @@
           "200": {
             "description": "OK"
           }
-        }
-      }
-    },
-    "/animals/": {
-      "get": {
-        "tags": [
-          "AnimalType",
-          "NotSecured"
-        ],
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "/animals/breed": {
+    "/user/register/self": {
       "post": {
         "tags": [
-          "AnimalType",
-          "Secured"
+          "Auth"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
+            "name": "user-agent",
+            "in": "header",
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "icon": {
-                  "example": "any"
-                },
-                "breeds": {
-                  "example": "any"
-                }
-              }
+              "type": "string"
             }
           }
         ],
@@ -124,400 +84,1415 @@
           "200": {
             "description": "OK"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
-    "/animals/{animalTypeName}": {
-      "delete": {
+    "/user/logout": {
+      "get": {
         "tags": [
-          "AnimalType",
-          "Secured"
+          "Auth"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "animalTypeName",
-            "in": "path",
-            "required": true,
-            "type": "string"
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user/check": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     }
   },
-  "definitions": {
-    "AnimalType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "cat"
-        },
-        "icon": {
-          "type": "string",
-          "example": "%backend%/images/baseicon.png"
-        },
-        "breeds": {
-          "type": "array",
-          "example": [
-            "first breed",
-            "secound breed"
-          ],
-          "items": {
-            "type": "string"
-          }
-        }
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
-    "Animal": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "animal1"
-        },
-        "age": {
-          "type": "number",
-          "example": 12
-        },
-        "weight": {
-          "type": "number",
-          "example": 2
-        },
-        "breed": {
-          "type": "string",
-          "example": "ObjectId"
-        },
-        "animalType": {
-          "type": "string",
-          "example": "ObejectId"
-        },
-        "documents": {
-          "type": "array",
-          "example": [
-            "ObjectId"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "injections": {
-          "type": "array",
-          "example": [
-            "ObjectId"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "gender": {
-          "type": "string",
-          "example": "male || famale || unknown"
-        },
-        "chipId": {
-          "type": "string",
-          "example": "981020012345678"
-        },
-        "birthDate": {
-          "type": "object",
-          "properties": {}
-        },
-        "registeredAt": {
-          "type": "object",
-          "properties": {}
-        },
-        "isSterilized": {
-          "type": "boolean",
-          "example": true
-        },
-        "owner": {
-          "type": "string",
-          "example": "ObjectId"
-        },
-        "avatar": {
-          "type": "string",
-          "example": "%backend%/images/baseicon.png"
-        },
-        "notes": {
-          "type": "array",
-          "example": [
-            "ObjectId"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "status": {
-          "type": "string",
-          "example": "active || archived"
-        }
-      }
-    },
-    "Breed": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "breed1"
-        },
-        "recomendations": {
-          "type": "array",
-          "items": {
+    "schemas": {
+      "AnimalType": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
             "type": "object",
             "properties": {
               "name": {
-                "type": "string",
-                "example": "recomendation1"
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "cat"
+                  }
+                }
               },
-              "content": {
-                "type": "string",
-                "example": "content"
+              "icon": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "uri"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "%backend%/images/baseicon.png"
+                  }
+                }
+              },
+              "breeds": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "example": {
+                    "type": "array",
+                    "example": [
+                      "first breed",
+                      "second breed"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "name"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
-        },
-        "createdAt": {
-          "type": "object",
-          "properties": {}
         }
-      }
-    },
-    "Document": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "example": "document1"
-        },
-        "fileUrl": {
-          "type": "string",
-          "example": "%backend%/images/baseicon.png"
-        },
-        "animal": {
-          "type": "string",
-          "example": "ObjectId"
-        },
-        "owner": {
-          "type": "string",
-          "example": "ObjetcId"
-        },
-        "uploadedAt": {
-          "type": "object",
-          "properties": {}
-        },
-        "status": {
-          "type": "string",
-          "example": "active || archived"
-        },
-        "fields": {
-          "type": "array",
-          "items": {
+      },
+      "Animal": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
             "type": "object",
             "properties": {
               "name": {
-                "type": "string",
-                "example": "field1"
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "animal1"
+                  }
+                }
               },
-              "data": {
-                "type": "string",
-                "example": "data"
+              "age": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 12
+                  }
+                }
               },
-              "type": {
-                "type": "string",
-                "example": "id"
+              "weight": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 2
+                  }
+                }
+              },
+              "breed": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "animalType": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "documents": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "ObjectId"
+                      }
+                    }
+                  }
+                }
+              },
+              "injections": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "ObjectId"
+                      }
+                    }
+                  }
+                }
+              },
+              "gender": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "male",
+                      "female",
+                      "unknown"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "chipId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "981020012345678"
+                  }
+                }
+              },
+              "birthDate": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  }
+                }
+              },
+              "registeredAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  }
+                }
+              },
+              "isSterilized": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "boolean"
+                  },
+                  "example": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              },
+              "owner": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "avatar": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "uri"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "%backend%/images/baseicon.png"
+                  }
+                }
+              },
+              "notes": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "ObjectId"
+                      }
+                    }
+                  }
+                }
+              },
+              "status": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "active",
+                      "archived"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "name",
+              "animalType",
+              "status"
+            ],
+            "items": {
+              "type": "string"
             }
           }
         }
-      }
-    },
-    "PlannedInjection": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "injection1"
-        },
-        "variant": {
-          "type": "string",
-          "example": "planned"
-        },
-        "note": {
-          "type": "string",
-          "example": "note"
-        },
-        "breed": {
-          "type": "string",
-          "example": "ObjectId"
-        },
-        "recomendatrionsAtWeeks": {
-          "type": "number",
-          "example": 1
-        }
-      }
-    },
-    "AdditionalInjection": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "injection1"
-        },
-        "variant": {
-          "type": "string",
-          "example": "additional"
-        },
-        "note": {
-          "type": "string",
-          "example": "note"
-        },
-        "animal": {
-          "type": "string",
-          "example": "ObjectId"
-        },
-        "recomendatrionsAtWeeks": {
-          "type": "number",
-          "example": 1
-        }
-      }
-    },
-    "RecordInjection": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "injection1"
-        },
-        "variant": {
-          "type": "string",
-          "example": "record"
-        },
-        "note": {
-          "type": "string",
-          "example": "note"
-        },
-        "animal": {
-          "type": "string",
-          "example": "ObjectId"
-        },
-        "injectionRef": {
-          "type": "string",
-          "example": "ObjectId"
-        },
-        "recomendatrionsAtWeeks": {
-          "type": "number",
-          "example": 1
-        }
-      }
-    },
-    "User": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string",
-          "example": "username"
-        },
-        "email": {
-          "type": "string",
-          "example": "test@test.com"
-        },
-        "passwordHash": {
-          "type": "string",
-          "example": "hash"
-        },
-        "googleId": {
-          "type": "string",
-          "example": "googleId"
-        },
-        "googleAccessToken": {
-          "type": "string",
-          "example": "google access token"
-        },
-        "googleRefreshToken": {
-          "type": "string",
-          "example": "google refresh token"
-        },
-        "animals": {
-          "type": "array",
-          "example": [
-            "ObjectId"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "avatar": {
-          "type": "string",
-          "example": "%backend%/images/baseicon.png"
-        },
-        "sessions": {
-          "type": "array",
-          "items": {
+      },
+      "Breed": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
             "type": "object",
             "properties": {
-              "provider": {
-                "type": "string",
-                "example": "google || self"
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "breed1"
+                  }
+                }
               },
-              "sessionId": {
-                "type": "string",
-                "example": "session id"
-              },
-              "device": {
-                "type": "string",
-                "example": "user-agent"
-              },
-              "ip": {
-                "type": "string",
-                "example": "ip"
+              "recomendations": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "object"
+                      },
+                      "properties": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "example": {
+                                "type": "string",
+                                "example": "recommendation1"
+                              }
+                            }
+                          },
+                          "content": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "example": {
+                                "type": "string",
+                                "example": "content"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": {
+                        "type": "array",
+                        "example": [
+                          "name",
+                          "content"
+                        ],
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
               },
               "createdAt": {
                 "type": "object",
-                "properties": {}
-              },
-              "expiresAt": {
-                "type": "object",
-                "properties": {}
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  }
+                }
               }
             }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "name"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
-        },
-        "roles": {
-          "type": "string",
-          "example": "user || admin"
-        },
-        "createdAt": {
-          "type": "object",
-          "properties": {}
-        },
-        "lastLogin": {
-          "type": "object",
-          "properties": {}
         }
-      }
-    },
-    "Note": {
-      "type": "object",
-      "properties": {
-        "text": {
-          "type": "string",
-          "example": "some text"
-        },
-        "author": {
-          "type": "string",
-          "example": "ObjectId"
-        },
-        "createdAt": {
-          "type": "object",
-          "properties": {}
+      },
+      "Document": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "document1"
+                  }
+                }
+              },
+              "fileUrl": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "uri"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "%backend%/images/baseicon.png"
+                  }
+                }
+              },
+              "animal": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "owner": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "uploadedAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  }
+                }
+              },
+              "status": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "active",
+                      "archived"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "fields": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "object"
+                      },
+                      "properties": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "example": {
+                                "type": "string",
+                                "example": "field1"
+                              }
+                            }
+                          },
+                          "data": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "example": {
+                                "type": "string",
+                                "example": "data"
+                              }
+                            }
+                          },
+                          "type": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "example": {
+                                "type": "string",
+                                "example": "id"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": {
+                        "type": "array",
+                        "example": [
+                          "name",
+                          "data",
+                          "type"
+                        ],
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "title",
+              "fileUrl",
+              "status"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PlannedInjection": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "injection1"
+                  }
+                }
+              },
+              "variant": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "planned"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "note": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "note"
+                  }
+                }
+              },
+              "breed": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "recomendatrionsAtWeeks": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "name",
+              "variant",
+              "breed"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AdditionalInjection": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "injection1"
+                  }
+                }
+              },
+              "variant": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "additional"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "note": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "note"
+                  }
+                }
+              },
+              "animal": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "recomendatrionsAtWeeks": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "name",
+              "variant",
+              "animal"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RecordInjection": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "injection1"
+                  }
+                }
+              },
+              "variant": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "record"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "note": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "note"
+                  }
+                }
+              },
+              "animal": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "injectionRef": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "recomendatrionsAtWeeks": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "name",
+              "variant",
+              "animal",
+              "injectionRef"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "username"
+                  }
+                }
+              },
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "email"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "test@test.com"
+                  }
+                }
+              },
+              "passwordHash": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "hash"
+                  }
+                }
+              },
+              "googleId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "googleId"
+                  }
+                }
+              },
+              "googleAccessToken": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "google access token"
+                  }
+                }
+              },
+              "googleRefreshToken": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "google refresh token"
+                  }
+                }
+              },
+              "animals": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "ObjectId"
+                      }
+                    }
+                  }
+                }
+              },
+              "avatar": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "uri"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "%backend%/images/baseicon.png"
+                  }
+                }
+              },
+              "sessions": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "object"
+                      },
+                      "properties": {
+                        "type": "object",
+                        "properties": {
+                          "provider": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "enum": {
+                                "type": "array",
+                                "example": [
+                                  "google",
+                                  "self"
+                                ],
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "sessionId": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "example": {
+                                "type": "string",
+                                "example": "session id"
+                              }
+                            }
+                          },
+                          "device": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "example": {
+                                "type": "string",
+                                "example": "user‑agent"
+                              }
+                            }
+                          },
+                          "ip": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "example": {
+                                "type": "string",
+                                "example": "127.0.0.1"
+                              }
+                            }
+                          },
+                          "createdAt": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "format": {
+                                "type": "string",
+                                "example": "date-time"
+                              }
+                            }
+                          },
+                          "expiresAt": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "string"
+                              },
+                              "format": {
+                                "type": "string",
+                                "example": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": {
+                        "type": "array",
+                        "example": [
+                          "provider",
+                          "sessionId",
+                          "createdAt",
+                          "expiresAt"
+                        ],
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "roles": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "user",
+                      "admin"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "createdAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  }
+                }
+              },
+              "lastLogin": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "username",
+              "email",
+              "roles"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "some text"
+                  }
+                }
+              },
+              "author": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "ObjectId"
+                  }
+                }
+              },
+              "createdAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "text",
+              "author"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
         }
       }
     }

@@ -1,9 +1,9 @@
-import mongoose, { mongo } from "mongoose"
-import type { ObjectId } from "mongoose"
+import mongoose, { ObjectId } from "mongoose"
 
 export interface IUserSession {
     provider: "self" | "google"
     sessionId: string
+    user: mongoose.Types.ObjectId
     device?: string
     ip?: string
     createdAt: Date
@@ -50,6 +50,7 @@ const SessionSchema = new mongoose.Schema<IUserSession>(
         ip: { type: String },
         createdAt: { type: Date, default: new Date() },
         expiresAt: { type: Date },
+        user: { type: mongoose.SchemaTypes.ObjectId, required: true },
     },
     { _id: false }
 )
@@ -62,7 +63,7 @@ export const UserSchema = new mongoose.Schema<IUserModel>({
     googleAccessToken: { type: String },
     googleRefreshToken: { type: String },
     animals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Animal" }],
-    avatar: { type: String },
+    avatar: { type: String, default: "%backend%/images/person_baseicon.png" },
     sessions: [SessionSchema],
     roles: { type: [String], enum: ["user", "admin"], default: ["user"] },
     createdAt: { type: Date, default: new Date() },

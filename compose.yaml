@@ -1,6 +1,6 @@
 services:
     main:
-        build: /server
+        build: ./server
         volumes:
             - ./server:/src
             - deps:/src/node_modules
@@ -14,6 +14,13 @@ services:
             - MONGO_URL=mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin
             - PORT=3000
             - DEV_MODE=${DEV_MODE}
+            - SWAGGER_HOST=${SWAGGER_HOST}
+            - SWAGGER_SCHEMA=${SWAGGER_SCHEMA}
+            - JWT_SECRET_ACCESS=dGqbwCF1lbn9zXk77SsuiCWYxnR6nJCg
+            - JWT_SECRET_REFRESH=XkAYI2bqUmT2yHOaCqCOYq5QCtvP2NwO
+            - SESSION_EXP_TIME=25920000
+            - JWT_ACCESS_EXP=3h
+            - JWT_REFRESH_EXP=3d
         command: sh -c "if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi"
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8

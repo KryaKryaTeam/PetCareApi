@@ -1,5 +1,5 @@
 import express, { Router } from "express"
-import AnimalTypeRouter from "./routers/AnimalTypeRouter"
+import AuthRouter from "./routers/AuthRouter"
 const router: Router = express.Router()
 
 router.get("/ping", (req, res, next) => {
@@ -7,6 +7,6 @@ router.get("/ping", (req, res, next) => {
     res.json({ message: "pong!" }).status(200)
 })
 
-router.use("/animals", AnimalTypeRouter)
+router.use("/user", AuthRouter)
 
 export { router }
