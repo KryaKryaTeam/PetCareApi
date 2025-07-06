@@ -16,7 +16,7 @@ if /i "%is_dev%"=="Y" (
 )
 
 set SWAGGER_HOST=localhost:3000
-set SWAGGER_SCHEMA="http"
+set SWAGGER_SCHEMA=http
 
 :: Start docker with current environment variables
 echo.
