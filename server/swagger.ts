@@ -1,14 +1,16 @@
 import swaggerAutogen from "swagger-autogen"
-import { AdditionalInjection } from "./models/Injection"
+import { config } from "dotenv"
+
+config()
 
 const doc = {
     info: {
         title: "Pet tracker API",
         description: "API for pet tracker!",
-        version: "0.0.1-dev",
+        version: "0.0.2-dev",
     },
-    host: "localhost:3000", // your server host
-    schemes: ["http"], // or 'https'
+    host: process.env.SWAGGER_HOST, // your server host
+    schemes: [process.env.SWAGGER_SCHEMA], // or 'https'
     basePath: "/api/",
     definitions: {
         AnimalType: {

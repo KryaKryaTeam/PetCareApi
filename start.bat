@@ -1,5 +1,6 @@
 @echo off
 echo Welcome to start helper!
+echo Set up env config for start
 
 :: Prompt if it's a dev start
 :isDEV
@@ -13,6 +14,9 @@ if /i "%is_dev%"=="Y" (
     echo Invalid answer. Please enter Y or N.
     goto isDEV
 )
+
+set SWAGGER_HOST=localhost:3000
+set SWAGGER_SCHEMA="http"
 
 :: Start docker with current environment variables
 echo.
