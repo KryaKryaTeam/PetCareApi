@@ -1,6 +1,6 @@
 ## Pet Tracker API
 
-![Version](https://img.shields.io/badge/version-0.0.1--dev-blue)
+![Version](https://img.shields.io/badge/version-0.0.2--dev-blue)
 
 ### This is documentation for pet tracker api
 

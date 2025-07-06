@@ -163,7 +163,7 @@
         },
         "icon": {
           "type": "string",
-          "example": "%backend%/images/%baseicon%"
+          "example": "%backend%/images/baseicon.png"
         },
         "breeds": {
           "type": "array",
@@ -174,6 +174,350 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "Animal": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "animal1"
+        },
+        "age": {
+          "type": "number",
+          "example": 12
+        },
+        "weight": {
+          "type": "number",
+          "example": 2
+        },
+        "breed": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "animalType": {
+          "type": "string",
+          "example": "ObejectId"
+        },
+        "documents": {
+          "type": "array",
+          "example": [
+            "ObjectId"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "injections": {
+          "type": "array",
+          "example": [
+            "ObjectId"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "gender": {
+          "type": "string",
+          "example": "male || famale || unknown"
+        },
+        "chipId": {
+          "type": "string",
+          "example": "981020012345678"
+        },
+        "birthDate": {
+          "type": "object",
+          "properties": {}
+        },
+        "registeredAt": {
+          "type": "object",
+          "properties": {}
+        },
+        "isSterilized": {
+          "type": "boolean",
+          "example": true
+        },
+        "owner": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "avatar": {
+          "type": "string",
+          "example": "%backend%/images/baseicon.png"
+        },
+        "notes": {
+          "type": "array",
+          "example": [
+            "ObjectId"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "example": "active || archived"
+        }
+      }
+    },
+    "Breed": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "breed1"
+        },
+        "recomendations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "recomendation1"
+              },
+              "content": {
+                "type": "string",
+                "example": "content"
+              }
+            }
+          }
+        },
+        "createdAt": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    },
+    "Document": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "document1"
+        },
+        "fileUrl": {
+          "type": "string",
+          "example": "%backend%/images/baseicon.png"
+        },
+        "animal": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "owner": {
+          "type": "string",
+          "example": "ObjetcId"
+        },
+        "uploadedAt": {
+          "type": "object",
+          "properties": {}
+        },
+        "status": {
+          "type": "string",
+          "example": "active || archived"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "field1"
+              },
+              "data": {
+                "type": "string",
+                "example": "data"
+              },
+              "type": {
+                "type": "string",
+                "example": "id"
+              }
+            }
+          }
+        }
+      }
+    },
+    "PlannedInjection": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "injection1"
+        },
+        "variant": {
+          "type": "string",
+          "example": "planned"
+        },
+        "note": {
+          "type": "string",
+          "example": "note"
+        },
+        "breed": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "recomendatrionsAtWeeks": {
+          "type": "number",
+          "example": 1
+        }
+      }
+    },
+    "AdditionalInjection": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "injection1"
+        },
+        "variant": {
+          "type": "string",
+          "example": "additional"
+        },
+        "note": {
+          "type": "string",
+          "example": "note"
+        },
+        "animal": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "recomendatrionsAtWeeks": {
+          "type": "number",
+          "example": 1
+        }
+      }
+    },
+    "RecordInjection": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "injection1"
+        },
+        "variant": {
+          "type": "string",
+          "example": "record"
+        },
+        "note": {
+          "type": "string",
+          "example": "note"
+        },
+        "animal": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "injectionRef": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "recomendatrionsAtWeeks": {
+          "type": "number",
+          "example": 1
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "username"
+        },
+        "email": {
+          "type": "string",
+          "example": "test@test.com"
+        },
+        "passwordHash": {
+          "type": "string",
+          "example": "hash"
+        },
+        "googleId": {
+          "type": "string",
+          "example": "googleId"
+        },
+        "googleAccessToken": {
+          "type": "string",
+          "example": "google access token"
+        },
+        "googleRefreshToken": {
+          "type": "string",
+          "example": "google refresh token"
+        },
+        "animals": {
+          "type": "array",
+          "example": [
+            "ObjectId"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "avatar": {
+          "type": "string",
+          "example": "%backend%/images/baseicon.png"
+        },
+        "sessions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "example": "google || self"
+              },
+              "sessionId": {
+                "type": "string",
+                "example": "session id"
+              },
+              "device": {
+                "type": "string",
+                "example": "user-agent"
+              },
+              "ip": {
+                "type": "string",
+                "example": "ip"
+              },
+              "createdAt": {
+                "type": "object",
+                "properties": {}
+              },
+              "expiresAt": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        },
+        "roles": {
+          "type": "string",
+          "example": "user || admin"
+        },
+        "createdAt": {
+          "type": "object",
+          "properties": {}
+        },
+        "lastLogin": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    },
+    "Note": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "example": "some text"
+        },
+        "author": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "createdAt": {
+          "type": "object",
+          "properties": {}
         }
       }
     }

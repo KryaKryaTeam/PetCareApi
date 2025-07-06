@@ -13,7 +13,8 @@ services:
         environment:
             - MONGO_URL=mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin
             - PORT=3000
-        command: sh -c "npm run test; npm run swagger && npm run dev"
+            - DEV_MODE=${DEV_MODE}
+        command: sh -c "if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi"
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8
         environment:

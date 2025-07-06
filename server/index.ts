@@ -8,6 +8,8 @@ import { config } from "dotenv"
 
 config()
 
+console.log("|START DATA| - ", "\n   - DEV_MODE:", process.env.DEV_MODE, "\n   - MONGO_URL:", process.env.MONGO_URL)
+
 const app = express()
 app.use(
     cors({
