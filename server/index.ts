@@ -25,7 +25,11 @@ const app = express()
 
 app.use(
     cors({
-        origin: "http://localhost:3001",
+        origin: [
+            "http://localhost:3001",
+            process.env.SWAGGER_SCHEMA + "://" + process.env.SWAGGER_HOST,
+            process.env.FRONTEND_URL,
+        ],
         credentials: true,
     })
 )
