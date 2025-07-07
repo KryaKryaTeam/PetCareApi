@@ -1,11 +1,17 @@
 import { ApiError } from "../../error/ApiError"
 import { IUserSession } from "../../models/User"
-import { JwtPayload, sign, verify } from "jsonwebtoken"
+import { decode, JwtPayload, sign, verify } from "jsonwebtoken"
 import { SessionService } from "./SessionService"
+import BannedTokens, { IBannedTokenModel } from "../../models/BannedTokens"
 
 export interface IJWTPair {
     accessToken: string
     refreshToken: string
+}
+
+export interface IJWTPayload {
+    familyId: string
+    session: IUserSession
 }
 
 export class JWTService {
@@ -23,15 +29,17 @@ export class JWTService {
 
         return { accessToken, refreshToken }
     }
-    static validateAccess(accessToken: string) {
-        const decode: any = verify(accessToken, process.env.JWT_SECRET_ACCESS)
+    static async validateAccess(accessToken: string): Promise<IUserSession> {
+        const decode = verify(accessToken, process.env.JWT_SECRET_ACCESS) as JwtPayload & IJWTPayload
+        await JWTService.checkBan(decode.familyId)
         return SessionService.SessionTimestampStringToDate(decode.session)
     }
-    static validatePair(pair: IJWTPair) {
+    static async validatePair(pair: IJWTPair): Promise<IUserSession> {
         const decode1: any = verify(pair.accessToken, process.env.JWT_SECRET_ACCESS)
         const decode2: any = verify(pair.refreshToken, process.env.JWT_SECRET_REFRESH)
 
         if (decode1.familyId != decode2.familyId) throw ApiError.unauthorized("pair is not accepted")
+        await JWTService.checkBan(decode1.familyId)
 
         return SessionService.SessionTimestampStringToDate(decode1.session)
     }
@@ -42,5 +50,28 @@ export class JWTService {
             header += allowed[Math.floor(Math.random() * allowed.length)]
         }
         return Date.now() + "-" + header
+    }
+    static async banPair(pair: IJWTPair): Promise<IBannedTokenModel> {
+        const decode_ = decode(pair.refreshToken) as JwtPayload & IJWTPayload
+        const ban_record = new BannedTokens({ familyId: decode_.familyId, sessionId: decode_.session.sessionId })
+        await ban_record.save()
+        return ban_record
+    }
+    static async checkBan(familyId) {
+        const ban_record = await BannedTokens.findOne({ familyId })
+        if (!ban_record) return
+        if (ban_record && ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) > Date.now())
+            throw ApiError.unauthorized("token is banned")
+        if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) < Date.now())
+            await ban_record.deleteOne()
+    }
+    static async checkBanByPair(pair: IJWTPair) {
+        const decode_ = decode(pair.accessToken) as JwtPayload & IJWTPayload
+        const ban_record = await BannedTokens.findOne({ familyId: decode_.familyId })
+        if (!ban_record) return
+        if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) > Date.now())
+            throw ApiError.unauthorized("token is banned")
+        if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) < Date.now())
+            await ban_record.deleteOne()
     }
 }

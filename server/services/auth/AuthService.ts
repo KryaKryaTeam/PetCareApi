@@ -59,6 +59,13 @@ export class AuthServiceSelf {
         )
         await user.save()
     }
+    static async refresh(pair: IJWTPair): Promise<IJWTPair> {
+        await JWTService.checkBanByPair(pair)
+        const session = await JWTService.validatePair(pair)
+        const ban = await JWTService.banPair(pair)
+        const newPair = JWTService.generatePair(session)
+        return newPair
+    }
 }
 export class AuthServiceGoogle {
     static async login() {}

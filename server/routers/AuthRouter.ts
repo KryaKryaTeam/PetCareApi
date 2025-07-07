@@ -12,7 +12,13 @@ router.post("/login/self", async (req, res, next) => {
     const userAgent = req.headers["user-agent"]
 
     const result = await AuthServiceSelf.login(username, password, userAgent, ip)
-    res.status(200).json({ authorization: result })
+    res.cookie("refresh", result.refreshToken, {
+        domain: process.env.COOKIE_DOMAIN,
+        sameSite: "lax",
+        httpOnly: true,
+        secure: true,
+    })
+    res.status(200).json({ authorization: result.accessToken })
 })
 
 router.post("/register/self", async (req, res, next) => {
@@ -23,7 +29,13 @@ router.post("/register/self", async (req, res, next) => {
     const userAgent = req.headers["user-agent"]
 
     const result = await AuthServiceSelf.register(username, password, email, userAgent, ip)
-    res.status(200).json({ authorization: result })
+    res.cookie("refresh", result.refreshToken, {
+        domain: process.env.COOKIE_DOMAIN,
+        sameSite: "lax",
+        httpOnly: true,
+        secure: true,
+    })
+    res.status(200).json({ authorization: result.accessToken })
 })
 
 router.get("/logout", checkAuth, async (req, res, next) => {
@@ -38,6 +50,21 @@ router.get("/check", checkAuth, (req, res, next) => {
     // #swagger.tags = ["Auth"]
     // #swagger.security = [{ "bearerAuth": [] }]
     res.status(200).json({ message: "OK!" })
+})
+
+router.post("/refresh", async (req, res, next) => {
+    // #swagger.tags = ["Auth"]
+    const { accessToken } = req.body
+    const { refresh } = req.cookies
+
+    const result = await AuthServiceSelf.refresh({ accessToken, refreshToken: refresh })
+    res.cookie("refresh", result.refreshToken, {
+        domain: process.env.COOKIE_DOMAIN,
+        sameSite: "lax",
+        httpOnly: true,
+        secure: true,
+    })
+    res.status(200).json({ authorization: result.accessToken })
 })
 
 export default router
