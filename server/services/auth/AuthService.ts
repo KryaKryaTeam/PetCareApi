@@ -1,8 +1,10 @@
+import { google } from "googleapis"
 import { ApiError } from "../../error/ApiError"
 import User, { IUserSession } from "../../models/User"
 import { HashService } from "./HashService"
 import { IJWTPair, JWTService } from "./JWTService"
 import { SessionService } from "./SessionService"
+import { OAuth2Client } from "google-auth-library"
 
 export class AuthServiceSelf {
     static async login(username: string, password: string, device: string, ip: string): Promise<IJWTPair> {
@@ -66,8 +68,14 @@ export class AuthServiceSelf {
         const newPair = JWTService.generatePair(session)
         return newPair
     }
-}
-export class AuthServiceGoogle {
-    static async login() {}
-    static async register() {}
+    static async loginUsingGoogle(googleAccessToken: string) {
+        const client: OAuth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+
+        const tokenInfo = await client.getTokenInfo(googleAccessToken)
+        client.credentials.access_token = googleAccessToken
+
+        const profile = await client.fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")
+
+        console.log(tokenInfo, profile)
+    }
 }

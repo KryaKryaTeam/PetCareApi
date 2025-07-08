@@ -21,6 +21,7 @@ services:
             - SESSION_EXP_TIME=25920000
             - JWT_ACCESS_EXP=3h
             - JWT_REFRESH_EXP=3d
+            - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
         command: sh -c "if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi"
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8

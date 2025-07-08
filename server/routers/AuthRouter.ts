@@ -67,4 +67,13 @@ router.post("/refresh", async (req, res, next) => {
     res.status(200).json({ authorization: result.accessToken })
 })
 
+router.post("/login/google", async (req, res, next) => {
+    // #swagger.tags = ["Auth"]
+    const { accessToken } = req.body
+
+    const result = await AuthServiceSelf.loginUsingGoogle(accessToken)
+
+    res.status(200).json({ message: "OK!" })
+})
+
 export default router
