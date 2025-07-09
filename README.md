@@ -1,4 +1,7 @@
-## Pet Tracker API
+<img src="https://api.swedka121.com/assets/Logo.png"
+     alt="Logo" width="64" align="left" />
+     
+# PetCare API
 
 ![Version](https://img.shields.io/badge/version-0.0.3--dev-blue) ![Frontend](https://img.shields.io/badge/Frontend-https://github.com/KryaKryaTeam/PetCareFrontend-purple?link=https://github.com/KryaKryaTeam/PetCareFrontend)
 
