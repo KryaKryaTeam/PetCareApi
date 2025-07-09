@@ -13,10 +13,9 @@ export interface IUserSession {
 export interface IUser {
     username: string
     email: string
-    passwordHash: string
+    isOAuth: boolean
+    passwordHash?: string
     googleId?: string
-    googleAccessToken?: string
-    googleRefreshToken?: string
     animals?: string[]
     avatar?: string
     sessions?: IUserSession[]
@@ -29,11 +28,10 @@ export interface IUser {
 export interface IUserModel extends Document {
     username: string
     email: string
-    passwordHash: string
+    isOAuth: boolean
+    passwordHash?: string
     googleId?: string
-    googleAccessToken?: string
-    googleRefreshToken?: string
-    animals?: ObjectId[]
+    animals?: string[]
     avatar?: string
     sessions?: IUserSession[]
     roles?: ("user" | "admin" | "staff")[]
@@ -58,10 +56,9 @@ const SessionSchema = new mongoose.Schema<IUserSession>(
 export const UserSchema = new mongoose.Schema<IUserModel>({
     username: { type: String, required: true, unique: true, trim: true, minlength: 3, maxlength: 30 },
     email: { type: String, required: true, unique: true, lowercase: true, match: /^\S+@\S+\.\S+$/ },
-    passwordHash: { type: String, required: true },
+    passwordHash: { type: String },
+    isOAuth: { type: Boolean, default: false },
     googleId: { type: String, unique: true, sparse: true },
-    googleAccessToken: { type: String },
-    googleRefreshToken: { type: String },
     animals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Animal" }],
     avatar: { type: String, default: "%backend%/images/person_baseicon.png" },
     sessions: [SessionSchema],

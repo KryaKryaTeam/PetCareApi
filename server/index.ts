@@ -6,6 +6,7 @@ import swaggerDoc from "./swagger.json"
 import { router } from "./router"
 import { config } from "dotenv"
 import { ApiError } from "./error/ApiError"
+import cookieParser from "cookie-parser"
 
 config()
 
@@ -33,6 +34,7 @@ app.use(
         credentials: true,
     })
 )
+app.use(cookieParser())
 app.use(express.json())
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc))
 app.use("/api", router)
