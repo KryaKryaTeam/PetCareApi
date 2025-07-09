@@ -5,7 +5,7 @@
 
 ![Version](https://img.shields.io/badge/version-0.0.3--dev-blue) ![Frontend](https://img.shields.io/badge/Frontend-https://github.com/KryaKryaTeam/PetCareFrontend-purple?link=https://github.com/KryaKryaTeam/PetCareFrontend)
 
-### This is documentation for pet tracker api
+### This is documentation for PetCare API
 
 For start you need docker (Docker desktop on windows)
 
@@ -16,7 +16,7 @@ For start you need docker (Docker desktop on windows)
 **2 Way**
  - Run `start.bat` on Windows.
 
-**Swagger docs**
+### Swagger docs
 
 To view the Swagger docs, start the project and open http://localhost:3000/docs in your browser.
 
