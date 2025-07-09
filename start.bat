@@ -1,9 +1,9 @@
 @echo off
+setlocal EnableDelayedExpansion
 echo Welcome to start helper!
 echo Set up env config for start
 
 set "ENV_FILE=.env"
-set "FIELD_NAME=GOOGLE_CLIENT_ID"
 set "SWAGGER_HOST=localhost:3000"
 set "SWAGGER_SCHEMA=http"
 
@@ -20,41 +20,102 @@ if /i "%is_dev%"=="Y" (
     goto isDEV
 )
 
-setlocal EnableDelayedExpansion
 
-:: 1. Does the .env file already exist?
+:: Create .env if missing
 if not exist "%ENV_FILE%" (
     echo %ENV_FILE% not found. Creating it...
     type nul > "%ENV_FILE%"
 )
 
-:: 2. Check if FIELD=... is already present
-findstr /b /c:"%FIELD_NAME%=" "%ENV_FILE%" >nul
-if %errorlevel%==0 (
-    goto run
-)
+call :RandStr "RAND1"
+call :RandStr "RAND2"
 
-:: 3. Prompt the user for a value
-:ask
-set /p "FIELD_VALUE=Enter value for %FIELD_NAME%: "
-if "%FIELD_VALUE%"=="" (
-    echo Value cannot be empty — please try again.
-    goto ask
-)
+:: Call subroutines to collect env values
+call :EnsureEnv "GOOGLE_CLIENT_ID"
+call :EnsureEnv "FRONTEND_URL"
+call :EnsureEnvDefault "JWT_SECRET_ACCESS" %RAND1%
+call :EnsureEnvDefault "JWT_SECRET_REFRESH" %RAND2%
+call :EnsureEnvDefault "SESSION_EXP_TIME" "25920000"
+call :EnsureEnvDefault "JWT_ACCESS_EXP" "3h"
+call :EnsureEnvDefault "JWT_REFRESH_EXP" "3d"
 
-:: 4. Append the line to the .env file
-echo %FIELD_NAME%=%FIELD_VALUE%>>"%ENV_FILE%"
-echo Added %FIELD_NAME% to %ENV_FILE%.
-
+:: Ensure .env is in .gitignore
 if not exist ".gitignore" (
     echo .env > ".gitignore"
+) else (
+    findstr /x ".env" ".gitignore" >nul || echo .env>>".gitignore"
 )
 
-:run
+echo Start configuration:
 
-:: Start docker with current environment variables
+:: Show .env so the user can verify
 echo.
-echo Starting Docker Compose...
-docker compose up --no-attach mongo --build 
+echo === .env contents ===
+type "%ENV_FILE%"
+echo =====================
 
 pause
+
+:: Start Docker
+echo.
+echo Starting Docker Compose...
+docker compose up --no-attach mongo --build
+
+pause
+exit /b
+
+:: ----------------------------------------
+:EnsureEnv
+:: Prompt until user gives a non-empty value
+:: %1 = VAR_NAME
+set VAR_NAME=%~1
+set VALUE=
+
+findstr /b /c:"%VAR_NAME%=" "%ENV_FILE%" >nul
+if errorlevel 1 (
+    :askLoop
+    set /p VALUE=Enter value for %VAR_NAME%: 
+    if "!VALUE!"=="" (
+        echo Value cannot be empty — please try again.
+        goto askLoop
+    )
+    echo %VAR_NAME%=!VALUE!>>"%ENV_FILE%"
+    echo Added %VAR_NAME% to %ENV_FILE%.
+)
+goto :EOF
+
+:EnsureEnvDefault
+:: Prompt with optional default
+:: %1 = VAR_NAME
+:: %2 = default fallback
+
+set VAR_NAME=%~1
+set DEFAULT_VAL=%~2
+set VALUE=
+
+findstr /b /c:"%VAR_NAME%=" "%ENV_FILE%" >nul
+if errorlevel 1 (
+    set /p VALUE="Enter value for %VAR_NAME% (Leave empty for default [%DEFAULT_VAL%]): "
+    if "!VALUE!"=="" (
+        echo %VAR_NAME%=%DEFAULT_VAL%>>"%ENV_FILE%"
+    ) else (
+        echo %VAR_NAME%=!VALUE!>>"%ENV_FILE%"
+    )
+    echo Added %VAR_NAME% to %ENV_FILE%.
+)
+goto :EOF
+
+:RandStr
+
+set VAR_NAME=%~1
+
+set "string=abcdefghijklmnopqrstuvwxyzQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
+set "result="
+for /L %%i in (1,1,30) do call :add
+call set "%VAR_NAME%=%result%"
+goto :EOF
+
+:add
+set /a x=%random% %% 62 
+set result=%result%!string:~%x%,1!
+goto :EOF
