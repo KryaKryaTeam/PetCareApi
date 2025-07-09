@@ -10,7 +10,7 @@
 For start you need docker (Docker desktop on windows)
 
 **1 Way**
- - Add `.env` file to root of the project and configure project using this [table](https://github.com/KryaKryaTeam/PetCareApi/edit/main/README.md#env-config-variables)
+ - Add `.env` file to root of the project and configure project using this [table](#env-config-variables)
  - In the console, run: `docker compose --env-file .env up --build`
 
 **2 Way**
