@@ -1,6 +1,6 @@
 ## Pet Tracker API
 
-![Version](https://img.shields.io/badge/version-0.0.3--dev-blue)
+![Version](https://img.shields.io/badge/version-0.0.3--dev-blue) ![Frontend](https://img.shields.io/badge/Frontend-https://github.com/KryaKryaTeam/PetCareFrontend-purple?link=https://github.com/KryaKryaTeam/PetCareFrontend)
 
 ### This is documentation for pet tracker api
 
