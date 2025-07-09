@@ -23,6 +23,7 @@ services:
             - JWT_REFRESH_EXP=${JWT_REFRESH_EXP}
             - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
             - FRONTEND_URL=${FRONTEND_URL}
+            - COOKIE_DOMAIN=${COOKIE_DOMAIN}
         command: sh -c "if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi"
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8

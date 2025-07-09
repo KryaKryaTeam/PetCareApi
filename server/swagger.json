@@ -194,6 +194,15 @@
           "Auth"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"

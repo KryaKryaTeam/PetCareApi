@@ -33,6 +33,7 @@ call :RandStr "RAND2"
 :: Call subroutines to collect env values
 call :EnsureEnv "GOOGLE_CLIENT_ID"
 call :EnsureEnv "FRONTEND_URL"
+call :EnsureEnvDefault "COOKIE_DOMAIN" "localhost"
 call :EnsureEnvDefault "JWT_SECRET_ACCESS" %RAND1%
 call :EnsureEnvDefault "JWT_SECRET_REFRESH" %RAND2%
 call :EnsureEnvDefault "SESSION_EXP_TIME" "25920000"

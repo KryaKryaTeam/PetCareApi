@@ -2,7 +2,7 @@ import { ApiError } from "../../error/ApiError"
 import { IUserSession } from "../../models/User"
 import { decode, JwtPayload, sign, verify } from "jsonwebtoken"
 import { SessionService } from "./SessionService"
-import BannedTokens, { IBannedTokenModel } from "../../models/BannedTokens"
+import { SelfBannedToken, IBannedTokenModel } from "../../models/BannedToken"
 
 export interface IJWTPair {
     accessToken: string
@@ -53,12 +53,12 @@ export class JWTService {
     }
     static async banPair(pair: IJWTPair): Promise<IBannedTokenModel> {
         const decode_ = decode(pair.refreshToken) as JwtPayload & IJWTPayload
-        const ban_record = new BannedTokens({ familyId: decode_.familyId, sessionId: decode_.session.sessionId })
+        const ban_record = new SelfBannedToken({ familyId: decode_.familyId, sessionId: decode_.session.sessionId })
         await ban_record.save()
         return ban_record
     }
     static async checkBan(familyId) {
-        const ban_record = await BannedTokens.findOne({ familyId })
+        const ban_record = await SelfBannedToken.findOne({ familyId })
         if (!ban_record) return
         if (ban_record && ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) > Date.now())
             throw ApiError.unauthorized("token is banned")
@@ -67,7 +67,7 @@ export class JWTService {
     }
     static async checkBanByPair(pair: IJWTPair) {
         const decode_ = decode(pair.accessToken) as JwtPayload & IJWTPayload
-        const ban_record = await BannedTokens.findOne({ familyId: decode_.familyId })
+        const ban_record = await SelfBannedToken.findOne({ familyId: decode_.familyId })
         if (!ban_record) return
         if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) > Date.now())
             throw ApiError.unauthorized("token is banned")
