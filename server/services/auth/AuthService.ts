@@ -102,6 +102,7 @@ export class AuthServiceSelf {
 
         const familyId = JWTService.generateFamilyId()
         session.familyId = familyId
+        session.expiresAt = new Date(Date.now() + Number(process.env.SESSION_EXP_TIME))
 
         user.sessions.push(session)
 
