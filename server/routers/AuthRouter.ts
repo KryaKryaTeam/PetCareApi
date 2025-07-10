@@ -84,4 +84,27 @@ router.post("/login/google", async (req, res, next) => {
     res.status(200).json({ authorization: result.accessToken })
 })
 
+router.get("/sesssion/close/:session", checkAuth, async (req, res, next) => {
+    // #swagger.tags = ["Auth"]
+    // #swagger.security = [{ "bearerAuth": [] }]
+    const { session } = req.params
+    //@ts-ignore
+    const user = req.session.user
+
+    const result = await AuthServiceSelf.closeSession(session, user.toString())
+
+    res.json({ message: "Ok!" }).status(200)
+})
+
+router.get("/session/all", checkAuth, async (req, res, next) => {
+    // #swagger.tags = ["Auth"]
+    // #swagger.security = [{ "bearerAuth": [] }]
+    //@ts-ignore
+    const user = req.session.user
+
+    const result = await AuthServiceSelf.getAllSessions(user.toString())
+
+    res.json({ sessions: result }).status(200)
+})
+
 export default router

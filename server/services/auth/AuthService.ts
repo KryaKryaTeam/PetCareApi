@@ -24,7 +24,9 @@ export class AuthServiceSelf {
 
         if (!HashService.check(user.passwordHash, password)) throw ApiError.unauthorized("password is incorrect")
 
-        let session = SessionService.generateNew(device, ip, "self", user.id)
+        let familyId = JWTService.generateFamilyId()
+
+        let session = SessionService.generateNew(device, ip, "self", user.id, familyId)
 
         user.sessions.splice(
             user.sessions.findIndex((v) => v.ip == ip),
@@ -32,9 +34,11 @@ export class AuthServiceSelf {
         )
         user.sessions.push(session)
 
+        user.lastLogin = new Date()
+
         await user.save()
 
-        let pair = JWTService.generatePair(session)
+        let pair = JWTService.generatePair(session, familyId)
 
         return pair
     }
@@ -51,7 +55,9 @@ export class AuthServiceSelf {
         const hash = HashService.hash(password)
         const user = new User({ username, passwordHash: hash, email })
 
-        const session = SessionService.generateNew(device, ip, "self", user.id)
+        const familyId = JWTService.generateFamilyId()
+
+        const session = SessionService.generateNew(device, ip, "self", user.id, familyId)
 
         user.sessions.splice(
             user.sessions.findIndex((v) => v.ip == ip),
@@ -60,7 +66,7 @@ export class AuthServiceSelf {
         user.sessions.push(session)
         await user.save()
 
-        let pair = JWTService.generatePair(session)
+        let pair = JWTService.generatePair(session, familyId)
         return pair
     }
     static async logout(session: IUserSession) {
@@ -72,12 +78,43 @@ export class AuthServiceSelf {
         )
         await user.save()
     }
+    static async closeSession(sessionId: string, userId: string) {
+        const user = await User.findById(userId)
+        if (!user) throw ApiError.badrequest("undefined user")
+        const session = user.sessions.find((a) => a.sessionId == sessionId)
+        if (!session) throw ApiError.badrequest("session to close undefined")
+        const record = await JWTService.banPairByFamilyId(session.familyId, session.sessionId)
+        user.sessions.splice(
+            user.sessions.findIndex((a) => a.sessionId == session.sessionId),
+            1
+        )
+    }
     static async refresh(pair: IJWTPair): Promise<IJWTPair> {
         await JWTService.checkBanByPair(pair)
         const session = await JWTService.validatePair(pair)
+
+        const user = await User.findById(session.user)
+        if (!user) throw ApiError.unauthorized("token is invalid")
+        user.sessions.splice(
+            user.sessions.findIndex((a) => a.sessionId == session.sessionId),
+            1
+        )
+
+        const familyId = JWTService.generateFamilyId()
+        session.familyId = familyId
+
+        user.sessions.push(session)
+
+        await user.save()
+
         const ban = await JWTService.banPair(pair)
-        const newPair = JWTService.generatePair(session)
+        const newPair = JWTService.generatePair(session, familyId)
         return newPair
+    }
+    static async getAllSessions(userId: string) {
+        const user = await User.findById(userId)
+        if (!user) throw ApiError.badrequest("user undefined")
+        return user.sessions
     }
     static async loginUsingGoogle(googleAccessToken: string, device: string, ip: string) {
         await GoogleTokenBanService.checkBan(googleAccessToken)
@@ -102,7 +139,9 @@ export class AuthServiceSelf {
                 googleId: profile.id,
             })
 
-            let session = SessionService.generateNew(device, ip, "google", user.id)
+            const familyId = JWTService.generateFamilyId()
+
+            let session = SessionService.generateNew(device, ip, "google", user.id, familyId)
 
             await GoogleTokenBanService.banToken(googleAccessToken, session.sessionId)
 
@@ -112,16 +151,20 @@ export class AuthServiceSelf {
             )
             user.sessions.push(session)
 
+            user.lastLogin = new Date()
+
             await user.save()
 
-            let pair = JWTService.generatePair(session)
+            let pair = JWTService.generatePair(session, familyId)
             return pair
         } else {
             if (!user_.isOAuth)
                 throw ApiError.unauthorized("OAuth authorization is not allowed for this account. Use password!")
             if (user_.googleId != profile.id) throw ApiError.unauthorized("token not allowed")
 
-            let session = SessionService.generateNew(device, ip, "google", user_.id)
+            const familyId = JWTService.generateFamilyId()
+
+            let session = SessionService.generateNew(device, ip, "google", user_.id, familyId)
 
             await GoogleTokenBanService.banToken(googleAccessToken, session.sessionId)
 
@@ -131,9 +174,11 @@ export class AuthServiceSelf {
             )
             user_.sessions.push(session)
 
+            user_.lastLogin = new Date()
+
             await user_.save()
 
-            let pair = JWTService.generatePair(session)
+            let pair = JWTService.generatePair(session, familyId)
 
             return pair
         }

@@ -8,9 +8,16 @@ export class SessionService {
         session_.createdAt = new Date(session.createdAt)
         return session_
     }
-    static generateNew(device: string, ip: string, provider: "google" | "self", user: Types.ObjectId) {
+    static generateNew(
+        device: string,
+        ip: string,
+        provider: "google" | "self",
+        user: Types.ObjectId,
+        familyId: string
+    ) {
         const session: IUserSession = {
             sessionId: SessionService.generateSessionId(),
+            familyId,
             provider,
             createdAt: new Date(),
             device,
