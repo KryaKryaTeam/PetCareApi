@@ -3,6 +3,7 @@ import mongoose, { ObjectId } from "mongoose"
 export interface IUserSession {
     provider: "self" | "google"
     sessionId: string
+    familyId: string
     user: mongoose.Types.ObjectId
     device?: string
     ip?: string
@@ -19,8 +20,7 @@ export interface IUser {
     animals?: string[]
     avatar?: string
     sessions?: IUserSession[]
-    roles?: ("user" | "admin" | "staff")[]
-    status?: "active" | "blocked" | "archived"
+    roles?: ("user" | "admin")[]
     createdAt?: Date
     lastLogin?: Date
 }
@@ -34,8 +34,7 @@ export interface IUserModel extends Document {
     animals?: string[]
     avatar?: string
     sessions?: IUserSession[]
-    roles?: ("user" | "admin" | "staff")[]
-    status?: "active" | "blocked" | "archived"
+    roles?: ("user" | "admin")[]
     createdAt?: Date
     lastLogin?: Date
 }
@@ -44,6 +43,7 @@ const SessionSchema = new mongoose.Schema<IUserSession>(
     {
         provider: { type: String, required: true, enum: ["google", "self"] },
         sessionId: { type: String, required: true },
+        familyId: { type: String, required: true },
         device: { type: String },
         ip: { type: String },
         createdAt: { type: Date, default: new Date() },

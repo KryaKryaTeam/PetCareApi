@@ -1,5 +1,6 @@
 import express, { Router } from "express"
 import AuthRouter from "./routers/AuthRouter"
+import ProfileRouter from "./routers/ProfileRouter"
 const router: Router = express.Router()
 
 router.get("/ping", (req, res, next) => {
@@ -8,5 +9,6 @@ router.get("/ping", (req, res, next) => {
 })
 
 router.use("/user", AuthRouter)
+router.use("/profile", ProfileRouter)
 
 export { router }

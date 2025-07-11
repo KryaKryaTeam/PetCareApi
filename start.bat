@@ -36,7 +36,7 @@ call :EnsureEnv "FRONTEND_URL"
 call :EnsureEnvDefault "COOKIE_DOMAIN" "localhost"
 call :EnsureEnvDefault "JWT_SECRET_ACCESS" %RAND1%
 call :EnsureEnvDefault "JWT_SECRET_REFRESH" %RAND2%
-call :EnsureEnvDefault "SESSION_EXP_TIME" "25920000"
+call :EnsureEnvDefault "SESSION_EXP_TIME" "10800000"
 call :EnsureEnvDefault "JWT_ACCESS_EXP" "3h"
 call :EnsureEnvDefault "JWT_REFRESH_EXP" "3d"
 
