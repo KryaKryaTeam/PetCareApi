@@ -35,8 +35,8 @@ export class JWTService {
 
         return { accessToken, refreshToken }
     }
-    static async validateAccess(accessToken: string): Promise<IUserSession> {
-        const decode = verify(accessToken, process.env.JWT_SECRET_ACCESS) as JwtPayload & IJWTPayload
+    static async validateToken(token: string): Promise<IUserSession> {
+        const decode = verify(token, process.env.JWT_SECRET_ACCESS) as JwtPayload & IJWTPayload
         await JWTService.checkBan(decode.familyId)
         return SessionService.SessionTimestampStringToDate(decode.session)
     }
@@ -57,8 +57,8 @@ export class JWTService {
         }
         return Date.now() + "-" + header
     }
-    static async banPair(pair: IJWTPair): Promise<IBannedTokenModel> {
-        const decode_ = decode(pair.refreshToken) as JwtPayload & IJWTPayload
+    static async banPairByToken(token: string): Promise<IBannedTokenModel> {
+        const decode_ = decode(token) as JwtPayload & IJWTPayload
         const ban_record = new SelfBannedToken({ familyId: decode_.familyId, sessionId: decode_.session.sessionId })
         await ban_record.save()
         return ban_record
@@ -76,13 +76,8 @@ export class JWTService {
         if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) < Date.now())
             await ban_record.deleteOne()
     }
-    static async checkBanByPair(pair: IJWTPair) {
-        const decode_ = decode(pair.accessToken) as JwtPayload & IJWTPayload
-        const ban_record = await SelfBannedToken.findOne({ familyId: decode_.familyId })
-        if (!ban_record) return
-        if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) > Date.now())
-            throw ApiError.unauthorized("token is banned")
-        if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) < Date.now())
-            await ban_record.deleteOne()
+    static async checkBanByToken(token: string) {
+        const decode_ = decode(token) as JwtPayload & IJWTPayload
+        this.checkBan(decode_.familyId)
     }
 }

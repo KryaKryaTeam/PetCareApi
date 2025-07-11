@@ -54,10 +54,9 @@ router.get("/check", checkAuth, (req, res, next) => {
 
 router.post("/refresh", async (req, res, next) => {
     // #swagger.tags = ["Auth"]
-    const { accessToken } = req.body
     const { refresh } = req.cookies
 
-    const result = await AuthServiceSelf.refresh({ accessToken, refreshToken: refresh })
+    const result = await AuthServiceSelf.refresh(refresh)
     res.cookie("refresh", result.refreshToken, {
         domain: process.env.COOKIE_DOMAIN,
         sameSite: "lax",

@@ -89,9 +89,9 @@ export class AuthServiceSelf {
             1
         )
     }
-    static async refresh(pair: IJWTPair): Promise<IJWTPair> {
-        await JWTService.checkBanByPair(pair)
-        const session = await JWTService.validatePair(pair)
+    static async refresh(refreshToken: string): Promise<IJWTPair> {
+        await JWTService.checkBanByToken(refreshToken)
+        const session = await JWTService.validateToken(refreshToken)
 
         const user = await User.findById(session.user)
         if (!user) throw ApiError.unauthorized("token is invalid")
@@ -108,7 +108,7 @@ export class AuthServiceSelf {
 
         await user.save()
 
-        const ban = await JWTService.banPair(pair)
+        const ban = await JWTService.banPairByToken(refreshToken)
         const newPair = JWTService.generatePair(session, familyId)
         return newPair
     }
