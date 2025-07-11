@@ -91,7 +91,7 @@ export class AuthServiceSelf {
     }
     static async refresh(refreshToken: string): Promise<IJWTPair> {
         await JWTService.checkBanByToken(refreshToken)
-        const session = await JWTService.validateToken(refreshToken)
+        const session = await JWTService.validateRefreshToken(refreshToken)
 
         const user = await User.findById(session.user)
         if (!user) throw ApiError.unauthorized("token is invalid")
