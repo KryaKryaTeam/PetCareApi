@@ -9,7 +9,7 @@ export async function checkAuth(req: express.Request, res: express.Response, nex
     if (authorization[0] != "Bearer")
         throw ApiError.badrequest("Authorization token is not Bearer. If you send JWT without Bearer prefix add this")
 
-    let session: any = await JWTService.validateAccess(authorization[1])
+    let session: any = await JWTService.validateToken(authorization[1])
 
     const user = await User.findById(session.user)
 
