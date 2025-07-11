@@ -40,6 +40,11 @@ export class JWTService {
         await JWTService.checkBan(decode.familyId)
         return SessionService.SessionTimestampStringToDate(decode.session)
     }
+    static async validateRefreshToken(token: string): Promise<IUserSession> {
+        const decode = verify(token, process.env.JWT_SECRET_REFRESH) as JwtPayload & IJWTPayload
+        await JWTService.checkBan(decode.familyId)
+        return SessionService.SessionTimestampStringToDate(decode.session)
+    }
     static async validatePair(pair: IJWTPair): Promise<IUserSession> {
         const decode1: any = verify(pair.accessToken, process.env.JWT_SECRET_ACCESS)
         const decode2: any = verify(pair.refreshToken, process.env.JWT_SECRET_REFRESH)
