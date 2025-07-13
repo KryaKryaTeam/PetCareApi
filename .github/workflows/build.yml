@@ -21,12 +21,12 @@ jobs:
 
             - name: 📦 Install dependencies
               run: npm ci
-              working-directory: src
+              working-directory: src/
 
             - name: 🔧 Compile TypeScript
               run: npm run build
-              working-directory: src
+              working-directory: src/
 
             - name: ✅ Show output files
-              working-directory: src
+              working-directory: src/
               run: ls -R dist
