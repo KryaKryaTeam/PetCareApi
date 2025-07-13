@@ -1,0 +1,1688 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Pet tracker API",
+        "description": "API for pet tracker!",
+        "version": "0.0.2-dev"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/api",
+            "description": "dynamic env‑based URL"
+        }
+    ],
+    "paths": {
+        "/ping": {
+            "get": {
+                "tags": [
+                    "System",
+                    "NotSecured"
+                ],
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/login/self": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SelfLoginSchema"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register/self": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SelfRegisterSchema"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/check": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/refresh": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/login/google": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "user-agent",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "accessToken": {
+                                        "example": "any"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/sesssion/close/{session}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/session/all": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profile/": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profile/avatar/url": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "avatar": {
+                                        "example": "any"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "AnimalType": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "cat"
+                                    }
+                                }
+                            },
+                            "icon": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "uri"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "%backend%/images/baseicon.png"
+                                    }
+                                }
+                            },
+                            "breeds": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "array"
+                                    },
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "example": "string"
+                                            }
+                                        }
+                                    },
+                                    "example": {
+                                        "type": "array",
+                                        "example": [
+                                            "first breed",
+                                            "second breed"
+                                        ],
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "name"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "Animal": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "animal1"
+                                    }
+                                }
+                            },
+                            "age": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "number"
+                                    },
+                                    "example": {
+                                        "type": "number",
+                                        "example": 12
+                                    }
+                                }
+                            },
+                            "weight": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "number"
+                                    },
+                                    "example": {
+                                        "type": "number",
+                                        "example": 2
+                                    }
+                                }
+                            },
+                            "breed": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "animalType": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "documents": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "array"
+                                    },
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "example": "string"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "ObjectId"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "injections": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "array"
+                                    },
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "example": "string"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "ObjectId"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "gender": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "enum": {
+                                        "type": "array",
+                                        "example": [
+                                            "male",
+                                            "female",
+                                            "unknown"
+                                        ],
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "chipId": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "981020012345678"
+                                    }
+                                }
+                            },
+                            "birthDate": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "date-time"
+                                    }
+                                }
+                            },
+                            "registeredAt": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "date-time"
+                                    }
+                                }
+                            },
+                            "isSterilized": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "boolean"
+                                    },
+                                    "example": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                }
+                            },
+                            "owner": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "avatar": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "uri"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "%backend%/images/baseicon.png"
+                                    }
+                                }
+                            },
+                            "notes": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "array"
+                                    },
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "example": "string"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "ObjectId"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "status": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "enum": {
+                                        "type": "array",
+                                        "example": [
+                                            "active",
+                                            "archived"
+                                        ],
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "name",
+                            "animalType",
+                            "status"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "Breed": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "breed1"
+                                    }
+                                }
+                            },
+                            "recomendations": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "array"
+                                    },
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "example": "object"
+                                            },
+                                            "properties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string",
+                                                                "example": "recommendation1"
+                                                            }
+                                                        }
+                                                    },
+                                                    "content": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string",
+                                                                "example": "content"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "required": {
+                                                "type": "array",
+                                                "example": [
+                                                    "name",
+                                                    "content"
+                                                ],
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "createdAt": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "date-time"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "name"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "Document": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "title": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "document1"
+                                    }
+                                }
+                            },
+                            "fileUrl": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "uri"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "%backend%/images/baseicon.png"
+                                    }
+                                }
+                            },
+                            "animal": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "owner": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "uploadedAt": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "date-time"
+                                    }
+                                }
+                            },
+                            "status": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "enum": {
+                                        "type": "array",
+                                        "example": [
+                                            "active",
+                                            "archived"
+                                        ],
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "fields": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "array"
+                                    },
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "example": "object"
+                                            },
+                                            "properties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string",
+                                                                "example": "field1"
+                                                            }
+                                                        }
+                                                    },
+                                                    "data": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string",
+                                                                "example": "data"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string",
+                                                                "example": "id"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "required": {
+                                                "type": "array",
+                                                "example": [
+                                                    "name",
+                                                    "data",
+                                                    "type"
+                                                ],
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "title",
+                            "fileUrl",
+                            "status"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "PlannedInjection": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "injection1"
+                                    }
+                                }
+                            },
+                            "variant": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "enum": {
+                                        "type": "array",
+                                        "example": [
+                                            "planned"
+                                        ],
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "note": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "note"
+                                    }
+                                }
+                            },
+                            "breed": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "recomendatrionsAtWeeks": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "number"
+                                    },
+                                    "example": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "name",
+                            "variant",
+                            "breed"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "AdditionalInjection": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "injection1"
+                                    }
+                                }
+                            },
+                            "variant": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "enum": {
+                                        "type": "array",
+                                        "example": [
+                                            "additional"
+                                        ],
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "note": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "note"
+                                    }
+                                }
+                            },
+                            "animal": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "recomendatrionsAtWeeks": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "number"
+                                    },
+                                    "example": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "name",
+                            "variant",
+                            "animal"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "RecordInjection": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "injection1"
+                                    }
+                                }
+                            },
+                            "variant": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "enum": {
+                                        "type": "array",
+                                        "example": [
+                                            "record"
+                                        ],
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "note": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "note"
+                                    }
+                                }
+                            },
+                            "animal": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "injectionRef": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "recomendatrionsAtWeeks": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "number"
+                                    },
+                                    "example": {
+                                        "type": "number",
+                                        "example": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "name",
+                            "variant",
+                            "animal",
+                            "injectionRef"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "username": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "username"
+                                    }
+                                }
+                            },
+                            "email": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "email"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "test@test.com"
+                                    }
+                                }
+                            },
+                            "passwordHash": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "hash"
+                                    }
+                                }
+                            },
+                            "googleId": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "googleId"
+                                    }
+                                }
+                            },
+                            "googleAccessToken": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "google access token"
+                                    }
+                                }
+                            },
+                            "googleRefreshToken": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "google refresh token"
+                                    }
+                                }
+                            },
+                            "animals": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "array"
+                                    },
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "example": "string"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "ObjectId"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "avatar": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "uri"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "%backend%/images/baseicon.png"
+                                    }
+                                }
+                            },
+                            "sessions": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "array"
+                                    },
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "example": "object"
+                                            },
+                                            "properties": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "provider": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "enum": {
+                                                                "type": "array",
+                                                                "example": [
+                                                                    "google",
+                                                                    "self"
+                                                                ],
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "sessionId": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string",
+                                                                "example": "session id"
+                                                            }
+                                                        }
+                                                    },
+                                                    "device": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string",
+                                                                "example": "user‑agent"
+                                                            }
+                                                        }
+                                                    },
+                                                    "ip": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string",
+                                                                "example": "127.0.0.1"
+                                                            }
+                                                        }
+                                                    },
+                                                    "createdAt": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "format": {
+                                                                "type": "string",
+                                                                "example": "date-time"
+                                                            }
+                                                        }
+                                                    },
+                                                    "expiresAt": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "string"
+                                                            },
+                                                            "format": {
+                                                                "type": "string",
+                                                                "example": "date-time"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "required": {
+                                                "type": "array",
+                                                "example": [
+                                                    "provider",
+                                                    "sessionId",
+                                                    "createdAt",
+                                                    "expiresAt"
+                                                ],
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "roles": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "enum": {
+                                        "type": "array",
+                                        "example": [
+                                            "user",
+                                            "admin"
+                                        ],
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "createdAt": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "date-time"
+                                    }
+                                }
+                            },
+                            "lastLogin": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "date-time"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "username",
+                            "email",
+                            "roles"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "Note": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "object"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "example": {
+                                        "type": "string",
+                                        "example": "some text"
+                                    }
+                                }
+                            },
+                            "author": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "ObjectId"
+                                    }
+                                }
+                            },
+                            "createdAt": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "string"
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "example": "date-time"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "example": [
+                            "text",
+                            "author"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "SelfLoginSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "example": "username"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ]
+            },
+            "SelfRegisterSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "example": "username"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "email"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password",
+                    "email"
+                ]
+            }
+        }
+    }
+}
