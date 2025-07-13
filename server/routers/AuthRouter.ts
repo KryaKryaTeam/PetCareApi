@@ -111,7 +111,7 @@ router.post("/refresh", cookie("refresh").notEmpty().isJWT(), validationMiddlewa
 router.post(
     // #swagger.tags = ["Auth"]
     "/login/google",
-    body("accessToken").notEmpty(),
+    body("accessToken").notEmpty().isJWT(),
     validationMiddleware,
     async (req, res, next) => {
         const { accessToken } = req.body
