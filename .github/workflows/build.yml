@@ -20,7 +20,7 @@ jobs:
                   node-version: 20
 
             - name: 📦 Install dependencies
-              run: npm ci
+              run: npm i
 
             - name: 🔧 Compile TypeScript
               run: npm run build
