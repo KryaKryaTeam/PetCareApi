@@ -194,6 +194,15 @@ const doc = {
                 },
                 required: ["text", "author"],
             },
+            SelfLoginSchema: {
+                $username: "username",
+                $password: "password",
+            },
+            SelfRegisterSchema: {
+                $username: "username",
+                $password: "password",
+                $email: "email",
+            },
         },
     },
 }

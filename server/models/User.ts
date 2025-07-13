@@ -54,7 +54,7 @@ const SessionSchema = new mongoose.Schema<IUserSession>(
 )
 
 export const UserSchema = new mongoose.Schema<IUserModel>({
-    username: { type: String, required: true, unique: true, trim: true, minlength: 3, maxlength: 30 },
+    username: { type: String, required: true, unique: true, trim: true, minlength: 3, maxlength: 100 },
     email: { type: String, required: true, unique: true, lowercase: true, match: /^\S+@\S+\.\S+$/ },
     passwordHash: { type: String },
     isOAuth: { type: Boolean, default: false },
