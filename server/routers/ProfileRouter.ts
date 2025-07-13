@@ -1,6 +1,8 @@
 import express from "express"
 import { checkAuth } from "../middleware/checkAuth"
 import { ProfileService } from "../services/ProfileService"
+import { body } from "express-validator"
+import { validationMiddleware } from "../middleware/validationMiddleware"
 const router = express.Router()
 
 router.get("/", checkAuth, async (req, res, next) => {
@@ -13,16 +15,22 @@ router.get("/", checkAuth, async (req, res, next) => {
 
     res.json({ profile: result }).status(200)
 })
-router.post("/avatar/url", checkAuth, async (req, res, next) => {
-    // #swagger.tags = ["Profile"]
-    // #swagger.security = [{ "bearerAuth": [] }]
-    //@ts-ignore
-    const session = req.session
-    const { avatar } = req.body
+router.post(
+    "/avatar/url",
+    body("avatar").notEmpty().isURL(),
+    validationMiddleware,
+    checkAuth,
+    async (req, res, next) => {
+        // #swagger.tags = ["Profile"]
+        // #swagger.security = [{ "bearerAuth": [] }]
+        //@ts-ignore
+        const session = req.session
+        const { avatar } = req.body
 
-    const result = await ProfileService.changeAvatar(avatar, session.user.toString())
+        const result = await ProfileService.changeAvatar(avatar, session.user.toString())
 
-    res.json({ message: "OK!" }).status(200)
-})
+        res.json({ message: "OK!" }).status(200)
+    }
+)
 
 export default router
