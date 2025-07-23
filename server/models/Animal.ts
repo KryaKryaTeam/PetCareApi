@@ -40,22 +40,22 @@ export interface IAnimalModel extends Document {
 }
 
 const AnimalSchema = new mongoose.Schema<IAnimalModel>({
-    name: { type: String, required: true },
+    name: { type: string, required: true },
     age: { type: Number, required: true, min: 0, max: 1000 },
     weight: { type: Number, required: true, min: 0, max: 150 },
     breed: { type: mongoose.SchemaTypes.ObjectId, ref: "Breed", required: true },
     animalType: { type: mongoose.SchemaTypes.ObjectId, ref: "AnimalType", required: true },
     documents: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Document" }],
     injections: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Injection" }],
-    gender: { type: String, enum: ["male", "female", "unknown"] },
-    chipId: { type: String, unique: true },
+    gender: { type: string, enum: ["male", "female", "unknown"] },
+    chipId: { type: string, unique: true },
     birthDate: { type: Date, required: true },
     registeredAt: { type: Date, default: Date.now() },
     isSterilized: { type: Boolean, required: true },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    avatar: { type: String, required: true, unique: true },
+    avatar: { type: string, required: true, unique: true },
     notes: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Note" }],
-    status: { type: String, enum: ["active", "archived"], default: "active" },
+    status: { type: string, enum: ["active", "archived"], default: "active" },
 })
 
 export default mongoose.model<IAnimalModel>("animal", AnimalSchema)
