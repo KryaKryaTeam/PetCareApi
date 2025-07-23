@@ -1,7 +1,7 @@
 import { ApiError } from "../error/ApiError"
 import User from "../models/User"
 
-export async function middleware(req, res, next) {
+export async function AdminRoleMiddleware(req, res, next) {
     //@ts-ignore
     const session = req.session
 

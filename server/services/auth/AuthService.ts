@@ -1,4 +1,3 @@
-import { google } from "googleapis"
 import { ApiError } from "../../error/ApiError"
 import User, { IUserSession } from "../../models/User"
 import { HashService } from "./HashService"
@@ -6,16 +5,6 @@ import { IJWTPair, JWTService } from "./JWTService"
 import { SessionService } from "./SessionService"
 import { OAuth2Client } from "google-auth-library"
 import { GoogleTokenBanService } from "./GoogleTokenBanService"
-
-interface IGoogleProfile {
-    id: string
-    email: string
-    verified_email: boolean
-    name: string
-    given_name: string
-    family_name: string
-    picture: string
-}
 
 export class AuthServiceSelf {
     static async login(username: string, password: string, device: string, ip: string): Promise<IJWTPair> {
@@ -50,7 +39,9 @@ export class AuthServiceSelf {
         ip: string
     ): Promise<IJWTPair> {
         const username_valid = await User.findOne({ username })
-        if (username_valid) throw ApiError.badrequest("user with this username is already created")
+        const email_valid = await User.findOne({ email })
+        if (username_valid || email_valid)
+            throw ApiError.badrequest("user with this username or email is already created")
 
         const hash = HashService.hash(password)
         const user = new User({ username, passwordHash: hash, email })

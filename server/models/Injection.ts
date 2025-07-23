@@ -1,56 +1,56 @@
-import mongoose from "mongoose"
+import mongoose, { Types } from "mongoose"
 
 const opts = { discriminatorKey: "variant", timestamps: { createdAt: true, updatedAt: false } }
 
 export type InjectionVariants = "planned" | "additional" | "record"
 
 interface IInjectionBase {
-    name: String
+    name: string
     variant: InjectionVariants
-    note?: String
+    note?: string
 }
 
 interface IInjectionBaseModel extends Document {
-    name: String
+    name: string
     variant: InjectionVariants
-    note?: String
+    note?: string
 }
 
 export interface IPlannedInjection extends IInjectionBase {
     variant: "planned"
-    breed: String
+    breed: string
     recomendatrionsAtWeeks: Number
 }
 
 export interface IAdditionalInjection extends IInjectionBase {
     variant: "additional"
-    animal: String
+    animal: string
     recomendatrionsAtWeeks: Number
 }
 
 export interface IRecordInjection extends IInjectionBase {
     variant: "record"
-    animal: String
-    injectionRef: String
+    animal: string
+    injectionRef: string
     recomendatrionsAtWeeks: Number
 }
 
 export interface IPlannedInjectionModel extends IInjectionBaseModel {
     variant: "planned"
-    breed: String
+    breed: Types.ObjectId
     recomendatrionsAtWeeks: Number
 }
 
 export interface IAdditionalInjectionModel extends IInjectionBaseModel {
     variant: "additional"
-    animal: String
+    animal: Types.ObjectId
     recomendatrionsAtWeeks: Number
 }
 
 export interface IRecordInjectionModel extends IInjectionBaseModel {
     variant: "record"
-    animal: String
-    injectionRef: String
+    animal: Types.ObjectId
+    injectionRef: Types.ObjectId
     recomendatrionsAtWeeks: Number
 }
 

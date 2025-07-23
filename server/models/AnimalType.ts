@@ -1,15 +1,16 @@
 import mongoose from "mongoose"
 import type { ObjectId } from "mongoose"
+import { Types } from "mongoose"
 
 export interface IAnimalType {
-    name: String
-    icon: String
-    breeds: String[]
+    name: string
+    icon: string
+    breeds: string[]
 }
 export interface IAnimalTypeModel extends Document {
-    name: String
-    icon: String
-    breeds: ObjectId[]
+    name: string
+    icon: string
+    breeds: Types.ObjectId[]
 }
 
 const schema: mongoose.Schema<IAnimalTypeModel> = new mongoose.Schema({
