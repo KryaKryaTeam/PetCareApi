@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import type { ObjectId } from "mongoose"
+import type { Document } from "mongoose"
 
 export interface IDocumentField {
     name: string

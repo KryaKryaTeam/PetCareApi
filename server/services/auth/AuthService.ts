@@ -1,4 +1,3 @@
-import { google } from "googleapis"
 import { ApiError } from "../../error/ApiError"
 import User, { IUserSession } from "../../models/User"
 import { HashService } from "./HashService"
@@ -6,16 +5,6 @@ import { IJWTPair, JWTService } from "./JWTService"
 import { SessionService } from "./SessionService"
 import { OAuth2Client } from "google-auth-library"
 import { GoogleTokenBanService } from "./GoogleTokenBanService"
-
-interface IGoogleProfile {
-    id: string
-    email: string
-    verified_email: boolean
-    name: string
-    given_name: string
-    family_name: string
-    picture: string
-}
 
 export class AuthServiceSelf {
     static async login(username: string, password: string, device: string, ip: string): Promise<IJWTPair> {
@@ -50,7 +39,9 @@ export class AuthServiceSelf {
         ip: string
     ): Promise<IJWTPair> {
         const username_valid = await User.findOne({ username })
-        if (username_valid) throw ApiError.badrequest("user with this username is already created")
+        const email_valid = await User.findOne({ email })
+        if (username_valid || email_valid)
+            throw ApiError.badrequest("user with this username or email is already created")
 
         const hash = HashService.hash(password)
         const user = new User({ username, passwordHash: hash, email })
@@ -121,14 +112,16 @@ export class AuthServiceSelf {
         await GoogleTokenBanService.checkBan(googleAccessToken)
         const client: OAuth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
-        const tokenInfo = await client.getTokenInfo(googleAccessToken)
+        const ticket = await client.verifyIdToken({
+            idToken: googleAccessToken,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        })
+        // const tokenInfo = await client.getTokenInfo(googleAccessToken)
         client.credentials.access_token = googleAccessToken
 
-        const profile = await client
-            .fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")
-            .then((res) => res.data as IGoogleProfile)
+        const profile = ticket.getPayload()
 
-        if (!profile.verified_email) throw ApiError.unauthorized("Need account with verified email")
+        if (!profile.email_verified) throw ApiError.unauthorized("Need account with verified email")
 
         const user_ = await User.findOne({ email: profile.email })
         if (!user_) {
@@ -137,7 +130,7 @@ export class AuthServiceSelf {
                 avatar: profile.picture,
                 email: profile.email,
                 isOAuth: true,
-                googleId: profile.id,
+                googleId: profile.sub,
             })
 
             const familyId = JWTService.generateFamilyId()
@@ -161,7 +154,7 @@ export class AuthServiceSelf {
         } else {
             if (!user_.isOAuth)
                 throw ApiError.unauthorized("OAuth authorization is not allowed for this account. Use password!")
-            if (user_.googleId != profile.id) throw ApiError.unauthorized("token not allowed")
+            if (user_.googleId != profile.sub) throw ApiError.unauthorized("token not allowed")
 
             const familyId = JWTService.generateFamilyId()
 
