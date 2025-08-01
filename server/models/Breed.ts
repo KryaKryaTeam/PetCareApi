@@ -1,4 +1,5 @@
 import mongoose, { Types } from "mongoose"
+import type { Document } from "mongoose"
 
 export interface IRecomendation {
     name: string
