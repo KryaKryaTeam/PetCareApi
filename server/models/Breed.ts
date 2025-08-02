@@ -1,19 +1,22 @@
-import mongoose from "mongoose"
+import mongoose, { Types } from "mongoose"
+import type { Document } from "mongoose"
 
 export interface IRecomendation {
-    name: String
-    content: String
+    name: string
+    content: string
 }
 
 export interface IBreed {
-    name: String
+    name: string
     recomendations: IRecomendation[]
+    animalType: string
     createdAt: Date
 }
 
 export interface IBreedModel extends Document {
-    name: String
+    name: string
     recomendations: IRecomendation[]
+    animalType: Types.ObjectId
     createdAt: Date
 }
 
@@ -35,6 +38,7 @@ const BreedSchema = new mongoose.Schema<IBreedModel>({
         maxlength: 50,
     },
     recomendations: [RecomendationSchema],
+    animalType: { type: mongoose.SchemaTypes.ObjectId, ref: "AnimalType", required: true },
     createdAt: { type: Date, default: new Date() },
 })
 

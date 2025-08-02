@@ -111,9 +111,7 @@ router.post("/refresh", cookie("refresh").notEmpty().isJWT(), validationMiddlewa
 router.post(
     // #swagger.tags = ["Auth"]
     "/login/google",
-    body("accessToken")
-        .notEmpty()
-        .matches(/^ya29\.[A-Za-z0-9\-_\.]+$/),
+    body("accessToken").notEmpty().isJWT(),
     validationMiddleware,
     async (req, res, next) => {
         const { accessToken } = req.body
