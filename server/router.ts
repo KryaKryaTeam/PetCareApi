@@ -7,6 +7,10 @@ const router: Router = express.Router();
 
 router.get("/ping", (req, res, next) => {
   // #swagger.tags = ["System", "NotSecured"]
+  req.logger.info("Test");
+  req.logger.error("Test");
+  req.logger.debbug("Test");
+
   res.json({ message: "pong!" }).status(200);
 });
 

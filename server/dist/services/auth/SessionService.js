@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SessionService = void 0;
+const id_generateor_1 = require("../../utils/id_generateor");
+const logger_1 = require("../../utils/logger");
 class SessionService {
     static SessionTimestampStringToDate(session) {
         let session_ = session;
@@ -9,6 +11,7 @@ class SessionService {
         return session_;
     }
     static generateNew(device, ip, provider, user, familyId) {
+        logger_1.globalLogger.logger().info("Session is created");
         const session = {
             sessionId: SessionService.generateSessionId(),
             familyId,
@@ -22,12 +25,7 @@ class SessionService {
         return session;
     }
     static generateSessionId() {
-        const allowed = "qwertyuiopasdfghjklzxcvbnm1234567890".split("");
-        let header = "";
-        for (let i = 0; i < 32; i++) {
-            header += allowed[Math.floor(Math.random() * allowed.length)];
-        }
-        return Date.now() + "-" + header;
+        return (0, id_generateor_1.generateId)("session");
     }
 }
 exports.SessionService = SessionService;

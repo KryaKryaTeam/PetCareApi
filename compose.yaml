@@ -1,45 +1,63 @@
 services:
-    main:
-        build: ./server
-        volumes:
-            - ./server:/src
-            - deps:/src/node_modules
-        depends_on:
-            - mongo
-        networks:
-            - mongo_net
-        ports:
-            - 3000:3000
-        environment:
-            - MONGO_URL=mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin
-            - PORT=3000
-            - DEV_MODE=${DEV_MODE}
-            - SWAGGER_HOST=${SWAGGER_HOST}
-            - SWAGGER_SCHEMA=${SWAGGER_SCHEMA}
-            - JWT_SECRET_ACCESS=${JWT_SECRET_ACCESS}
-            - JWT_SECRET_REFRESH=${JWT_SECRET_REFRESH}
-            - SESSION_EXP_TIME=${SESSION_EXP_TIME}
-            - JWT_ACCESS_EXP=${JWT_ACCESS_EXP}
-            - JWT_REFRESH_EXP=${JWT_REFRESH_EXP}
-            - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-            - FRONTEND_URL=${FRONTEND_URL}
-            - COOKIE_DOMAIN=${COOKIE_DOMAIN}
-        command: sh -c "if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi"
-    mongo:
-        image: mongodb/mongodb-community-server:6.0-ubi8
-        environment:
-            - MONGO_INITDB_ROOT_USERNAME=admin
-            - MONGO_INITDB_ROOT_PASSWORD=password12341234
-        volumes:
-            - mongo_data:/data/db
-        networks:
-            - mongo_net
-        ports:
-            - "27017:27017"
+  main:
+    build: ./server
+    volumes:
+      - ./server:/src
+      - deps:/src/node_modules
+    depends_on:
+      - mongo
+    networks:
+      - mongo_net
+      - monitoring
+    ports:
+      - 3000:3000
+    environment:
+      - MONGO_URL=mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin
+      - PORT=3000
+      - DEV_MODE=${DEV_MODE}
+      - SWAGGER_HOST=${SWAGGER_HOST}
+      - SWAGGER_SCHEMA=${SWAGGER_SCHEMA}
+      - JWT_SECRET_ACCESS=${JWT_SECRET_ACCESS}
+      - JWT_SECRET_REFRESH=${JWT_SECRET_REFRESH}
+      - SESSION_EXP_TIME=${SESSION_EXP_TIME}
+      - JWT_ACCESS_EXP=${JWT_ACCESS_EXP}
+      - JWT_REFRESH_EXP=${JWT_REFRESH_EXP}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN}
+    command: sh -c "if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi"
+  mongo:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password12341234
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mongo_net
+    ports:
+      - "27017:27017"
+  grafana-loki:
+    image: grafana/loki
+    volumes:
+      - loki:/loki
+    networks:
+      - monitoring
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "4000:3000"
+    networks:
+      - monitoring
+    volumes:
+      - grafana:/var/lib/grafana
 
 networks:
-    mongo_net:
+  mongo_net:
+  monitoring:
 
 volumes:
-    mongo_data:
-    deps:
+  mongo_data:
+  deps:
+  loki:
+  grafana:

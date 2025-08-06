@@ -1,13 +1,15 @@
-import crypto from "node:crypto"
+import crypto from "node:crypto";
+import { globalLogger } from "../../utils/logger";
 
 export class HashService {
-    static hash(data_to_hash: string) {
-        const hash = crypto.createHash("sha256")
-
-        return hash.update(data_to_hash).digest("hex")
-    }
-    static check(hashedVal: string, checkVal: string) {
-        const hashedCheckVal = HashService.hash(checkVal)
-        return hashedCheckVal == hashedVal
-    }
+  static hash(data_to_hash: string) {
+    const hash = crypto.createHash("sha256");
+    globalLogger.logger().info("Hash is completed");
+    return hash.update(data_to_hash).digest("hex");
+  }
+  static check(hashedVal: string, checkVal: string) {
+    const hashedCheckVal = HashService.hash(checkVal);
+    globalLogger.logger().info("Hash check is completed");
+    return hashedCheckVal == hashedVal;
+  }
 }
