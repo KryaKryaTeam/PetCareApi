@@ -34,7 +34,7 @@ jobs:
                   chmod 600 ~/.ssh/id_rsa
                   ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-            - name: 🌐 Delete previos build
+            - name: 🌐 Delete previous build
               run: ssh ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} "sudo rm -rf ./PetCareApi"
 
             - name: 🌐 Send build
