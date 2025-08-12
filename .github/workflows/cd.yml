@@ -41,4 +41,4 @@ jobs:
               run: scp -r ./server/dist ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:~/PetCareApi
 
             - name: 🌐 Start docker
-              run: ssh ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} "cd ./PetCareApi && echo ${{secrets.ENV_CONFIG}} >> .env && sudo docker compose up --build"
+              run: ssh ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} "cd ./PetCareApi \ && printf "%s" "${{ secrets.ENV_CONFIG }}" > .env \ && sudo docker compose up --build -d"
