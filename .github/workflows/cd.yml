@@ -35,4 +35,4 @@ jobs:
                   ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
             - name: 🌐 Send build
-              run: scp ./server/dist ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:~/PetCareApi
+              run: scp -r ./server/dist ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:~/PetCareApi
