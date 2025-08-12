@@ -11,6 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             DEV_MODE: "true"
+            TEST_RUN: "true"
             GOOGLE_CLIENT_ID: "401008546765-0ecbubggp6gra24vlbno1v3bt4d6pnci.apps.googleusercontent.com"
             FRONTEND_URL: "http://localhost:5127"
             COOKIE_DOMAIN: "localhost"
@@ -26,7 +27,11 @@ jobs:
               uses: actions/checkout@v4
 
             - name: 📦 Run doker compose
-              run: docker compose up --build
+              run: docker compose up --build --exit-code-from main
+
+            - name: ❌ Stop and remove containers
+              run: docker compose down -v
+              if: always()
 
     build:
         runs-on: ubuntu-latest
