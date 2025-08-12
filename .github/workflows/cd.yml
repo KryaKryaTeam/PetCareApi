@@ -10,7 +10,7 @@ on:
 
 jobs:
     deploy:
-        runs-on: ubunty-latest
+        runs-on: ubuntu-latest
         steps:
             - name: 📥 Checkout repository
               uses: actions/checkout@v4
@@ -21,14 +21,14 @@ jobs:
                   node-version: 20
             - name: 📥 Install deps
               run: npm i
-              working-directory: /server
+              working-directory: ./server
 
             - name: 🔁 Build project
               run: npm run build
-              working-directory: /server
+              working-directory: ./server
 
             - name: 🌐 Set up ssh
               run: mkdir ~/.ssh & echo ${{secrets.SSH_PRIVATE_KEY}} >> ~/.ssh/authorization_keys
 
             - name: 🌐 Send build
-              run: scp /server/dist ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:~/PetCareApi
+              run: scp ./server/dist ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:~/PetCareApi
