@@ -28,7 +28,11 @@ jobs:
               working-directory: ./server
 
             - name: 🌐 Set up ssh
-              run: mkdir ~/.ssh & echo ${{secrets.SSH_PRIVATE_KEY}} >> ~/.ssh/authorization_keys
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+                  ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
             - name: 🌐 Send build
               run: scp ./server/dist ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:~/PetCareApi
