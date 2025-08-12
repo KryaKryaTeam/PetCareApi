@@ -1,19 +1,50 @@
-name: Build TypeScript
+name: Check build
 
 on:
     push:
-        branches: ["**"]
+        branches: ["main"]
     pull_request:
-        branches: [main]
+        branches: ["main"]
 
 jobs:
-    build:
+    test:
         runs-on: ubuntu-latest
-
+        env:
+            DEV_MODE: "true"
+            GOOGLE_CLIENT_ID: "401008546765-0ecbubggp6gra24vlbno1v3bt4d6pnci.apps.googleusercontent.com"
+            FRONTEND_URL: "http://localhost:5127"
+            COOKIE_DOMAIN: "localhost"
+            JWT_SECRET_ACCESS: "1fS96nCAldGuUQ9YpSJVIWAngCdbBG"
+            JWT_SECRET_REFRESH: "2La9JgQhaWPXO1MRa14KMC3uGfBLuF"
+            SESSION_EXP_TIME: "10800000"
+            JWT_ACCESS_EXP: "3h"
+            JWT_REFRESH_EXP: "3d"
+            SWAGGER_HOST: "localhost:3000"
+            SWAGGER_SCHEMA: "http"
         steps:
             - name: 📥 Checkout repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
+            - name: 📦 Run doker compose
+              run: docker compose up --build
+
+    build:
+        runs-on: ubuntu-latest
+        env:
+            DEV_MODE: "false"
+            GOOGLE_CLIENT_ID: "401008546765-0ecbubggp6gra24vlbno1v3bt4d6pnci.apps.googleusercontent.com"
+            FRONTEND_URL: "http://localhost:5127"
+            COOKIE_DOMAIN: "localhost"
+            JWT_SECRET_ACCESS: "1fS96nCAldGuUQ9YpSJVIWAngCdbBG"
+            JWT_SECRET_REFRESH: "2La9JgQhaWPXO1MRa14KMC3uGfBLuF"
+            SESSION_EXP_TIME: "10800000"
+            JWT_ACCESS_EXP: "3h"
+            JWT_REFRESH_EXP: "3d"
+            SWAGGER_HOST: "localhost:3000"
+            SWAGGER_SCHEMA: "http"
+        steps:
+            - name: 📥 Checkout repository
+              uses: actions/checkout@v4
             - name: 🟨 Set up Node.js
               uses: actions/setup-node@v4
               with:
@@ -30,3 +61,6 @@ jobs:
             - name: ✅ Show output files
               working-directory: server/
               run: ls -R dist
+
+            - name: 📦 Run doker compose
+              run: docker compose up --build
