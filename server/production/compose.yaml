@@ -1,8 +1,8 @@
 services:
     main:
-        build: ./server
+        build: ./dist
         volumes:
-            - ./server:/src
+            - ./dist:/src
             - deps:/src/node_modules
         depends_on:
             - mongo
@@ -14,8 +14,8 @@ services:
         environment:
             - MONGO_URL=mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin
             - PORT=3000
-            - DEV_MODE=${DEV_MODE}
-            - TEST_RUN=${TEST_RUN}
+            - DEV_MODE=false
+            - TEST_RUN=false
             - SWAGGER_HOST=${SWAGGER_HOST}
             - SWAGGER_SCHEMA=${SWAGGER_SCHEMA}
             - JWT_SECRET_ACCESS=${JWT_SECRET_ACCESS}
@@ -27,7 +27,7 @@ services:
             - FRONTEND_URL=${FRONTEND_URL}
             - COOKIE_DOMAIN=${COOKIE_DOMAIN}
             - LOKI_HOST=http://grafana-loki:3100
-        command: sh -c "if [ "$TEST_RUN" = "false" ]; then if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi; else npm run test; fi"
+        command: npm run start"
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8
         environment:
@@ -59,15 +59,6 @@ services:
             - loki:/loki
         networks:
             - monitoring
-    grafana:
-        image: grafana/grafana
-        ports:
-            - "4000:3000"
-        networks:
-            - monitoring
-        volumes:
-            - grafana:/var/lib/grafana
-
 networks:
     mongo_net:
     monitoring:
@@ -76,5 +67,4 @@ volumes:
     mongo_data:
     deps:
     loki:
-    grafana:
     alloy_data:

@@ -1,0 +1,17 @@
+# Base image
+FROM node:24.3-slim
+ENV NODE_ENV=production
+
+RUN corepack enable && npm install -g npm@latest
+
+WORKDIR /src
+
+COPY package.json ./
+
+RUN npm i
+
+# Copy the rest of the server code into /src
+COPY . .
+
+
+

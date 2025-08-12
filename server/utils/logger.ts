@@ -2,6 +2,7 @@ import path from "path"
 import { generateId } from "./id_generateor"
 import fs from "fs"
 import axios from "axios"
+import { isDevMode } from "./isDevMode"
 
 export class Logger {
     endpoint: string
@@ -18,7 +19,7 @@ export class Logger {
         globalLogger.set(this)
     }
     start() {
-        if (process.env.DEV_MODE) {
+        if (isDevMode()) {
             fs.appendFileSync(
                 path.join(__dirname, "..", ".dev", `${this.requestId}.md`),
                 `<style>.info-log{color: blue} .error-log{color: red} .debbug-log{color: green}</style> \n# [LOG FILE FOR REQUEST ${this.requestId}]`
@@ -45,7 +46,7 @@ export class Logger {
 
     end() {
         const time = new Date(new Date().getTime() - this.startDate.getTime())
-        if (process.env.DEV_MODE) {
+        if (isDevMode()) {
             fs.writeFileSync(
                 path.join(__dirname, "..", ".dev", `${this.requestId}.md`),
                 `\n ## [REQUEST ENDED. TIME: ${time.getTime()}ms]`,
@@ -61,7 +62,7 @@ export class Logger {
             ERROR: "error-log",
             DEBBUG: "debbug-log",
         }
-        if (process.env.DEV_MODE) {
+        if (isDevMode()) {
             fs.writeFileSync(
                 path.join(__dirname, "..", ".dev", `${this.requestId}.md`),
                 "\n - <span class='" +
@@ -88,6 +89,10 @@ export class Logger {
             )
         }
         console.log("\n -" + new Date().toTimeString() + "   " + message)
+    }
+
+    setService(service: string) {
+        this.service = service
     }
 }
 

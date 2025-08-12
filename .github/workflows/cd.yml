@@ -1,0 +1,34 @@
+name: Continuos deployment
+
+on:
+    pull_request:
+        branches:
+            - main
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubunty-latest
+        steps:
+            - name: 📥 Checkout repository
+              uses: actions/checkout@v4
+
+            - name: 🟨 Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - name: 📥 Install deps
+              run: npm i
+              working-directory: /server
+
+            - name: 🔁 Build project
+              run: npm run build
+              working-directory: /server
+
+            - name: 🌐 Set up ssh
+              run: mkdir ~/.ssh & echo ${{secrets.SSH_PRIVATE_KEY}} >> ~/.ssh/authorization_keys
+
+            - name: 🌐 Send build
+              run: scp /server/dist ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:~/PetCareApi

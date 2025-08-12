@@ -11,6 +11,7 @@ class SessionService {
         return session_;
     }
     static generateNew(device, ip, provider, user, familyId) {
+        logger_1.globalLogger.logger().setService("session_service");
         logger_1.globalLogger.logger().info("Session is created");
         const session = {
             sessionId: SessionService.generateSessionId(),

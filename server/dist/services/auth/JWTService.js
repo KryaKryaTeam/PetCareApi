@@ -9,6 +9,7 @@ const logger_1 = require("../../utils/logger");
 const id_generateor_1 = require("../../utils/id_generateor");
 class JWTService {
     static generatePair(session, familyId) {
+        logger_1.globalLogger.logger().setService("jwt_service");
         logger_1.globalLogger.logger().info("JWT pair generate is starts");
         //@ts-ignore
         const accessToken = (0, jsonwebtoken_1.sign)({ session, familyId: familyId || JWTService.generateFamilyId() }, process.env.JWT_SECRET_ACCESS, {
@@ -23,6 +24,7 @@ class JWTService {
         return { accessToken, refreshToken };
     }
     static async validateToken(token) {
+        logger_1.globalLogger.logger().setService("jwt_service");
         logger_1.globalLogger.logger().info("JWT token validation is starts");
         const decode = (0, jsonwebtoken_1.verify)(token, process.env.JWT_SECRET_ACCESS);
         await JWTService.checkBan(decode.familyId);
@@ -30,6 +32,7 @@ class JWTService {
         return SessionService_1.SessionService.SessionTimestampStringToDate(decode.session);
     }
     static async validateRefreshToken(token) {
+        logger_1.globalLogger.logger().setService("jwt_service");
         logger_1.globalLogger.logger().info("JWT refresh token validation is starts");
         const decode = (0, jsonwebtoken_1.verify)(token, process.env.JWT_SECRET_REFRESH);
         await JWTService.checkBan(decode.familyId);
@@ -37,6 +40,7 @@ class JWTService {
         return SessionService_1.SessionService.SessionTimestampStringToDate(decode.session);
     }
     static async validatePair(pair) {
+        logger_1.globalLogger.logger().setService("jwt_service");
         logger_1.globalLogger.logger().info("JWT pair validation is starts");
         const decode1 = (0, jsonwebtoken_1.verify)(pair.accessToken, process.env.JWT_SECRET_ACCESS);
         logger_1.globalLogger.logger().info("Access token is validated");
@@ -52,6 +56,7 @@ class JWTService {
         return (0, id_generateor_1.generateId)("jwt");
     }
     static async banPairByToken(token) {
+        logger_1.globalLogger.logger().setService("jwt_service");
         logger_1.globalLogger.logger().info("Ban pair is starts");
         const decode_ = (0, jsonwebtoken_1.decode)(token);
         const ban_record = new BannedToken_1.SelfBannedToken({
@@ -62,6 +67,7 @@ class JWTService {
         return ban_record;
     }
     static async banPairByFamilyId(familyId, sessionId) {
+        logger_1.globalLogger.logger().setService("jwt_service");
         logger_1.globalLogger.logger().info("Ban pair is starts");
         const ban_record = new BannedToken_1.SelfBannedToken({
             familyId: familyId,
@@ -71,16 +77,14 @@ class JWTService {
         return ban_record;
     }
     static async checkBan(familyId) {
+        logger_1.globalLogger.logger().setService("jwt_service");
         logger_1.globalLogger.logger().info("Check ban of token is starts");
         const ban_record = await BannedToken_1.SelfBannedToken.findOne({ familyId });
         if (!ban_record)
             return;
-        if (ban_record &&
-            ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) >
-                Date.now())
+        if (ban_record && ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) > Date.now())
             throw ApiError_1.ApiError.unauthorized("token is banned");
-        if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) <
-            Date.now()) {
+        if (ban_record.createdAt.getTime() + Number(process.env.SESSION_EXP_TIME) < Date.now()) {
             await ban_record.deleteOne();
             logger_1.globalLogger.logger().info("Ban record is deleted");
         }

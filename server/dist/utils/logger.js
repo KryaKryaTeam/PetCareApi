@@ -7,6 +7,7 @@ exports.globalLogger = exports.Logger = void 0;
 const path_1 = __importDefault(require("path"));
 const id_generateor_1 = require("./id_generateor");
 const fs_1 = __importDefault(require("fs"));
+const isDevMode_1 = require("./isDevMode");
 class Logger {
     constructor(endpoint) {
         this.endpoint = endpoint;
@@ -16,7 +17,7 @@ class Logger {
         exports.globalLogger.set(this);
     }
     start() {
-        if (process.env.DEV_MODE) {
+        if ((0, isDevMode_1.isDevMode)()) {
             fs_1.default.appendFileSync(path_1.default.join(__dirname, "..", ".dev", `${this.requestId}.md`), `<style>.info-log{color: blue} .error-log{color: red} .debbug-log{color: green}</style> \n# [LOG FILE FOR REQUEST ${this.requestId}]`);
         }
         if (!fs_1.default.existsSync(path_1.default.join(__dirname, "..", "logs")))
@@ -37,7 +38,7 @@ class Logger {
     }
     end() {
         const time = new Date(new Date().getTime() - this.startDate.getTime());
-        if (process.env.DEV_MODE) {
+        if ((0, isDevMode_1.isDevMode)()) {
             fs_1.default.writeFileSync(path_1.default.join(__dirname, "..", ".dev", `${this.requestId}.md`), `\n ## [REQUEST ENDED. TIME: ${time.getTime()}ms]`, { flag: "a" });
         }
         console.log(`\n [REQUEST ENDED. TIME: ${time.getTime()}ms]`);
@@ -48,7 +49,7 @@ class Logger {
             ERROR: "error-log",
             DEBBUG: "debbug-log",
         };
-        if (process.env.DEV_MODE) {
+        if ((0, isDevMode_1.isDevMode)()) {
             fs_1.default.writeFileSync(path_1.default.join(__dirname, "..", ".dev", `${this.requestId}.md`), "\n - <span class='" +
                 class_level[level] +
                 "'>" +
@@ -68,6 +69,9 @@ class Logger {
             }) + "\n", { flag: "a" });
         }
         console.log("\n -" + new Date().toTimeString() + "   " + message);
+    }
+    setService(service) {
+        this.service = service;
     }
 }
 exports.Logger = Logger;

@@ -14,6 +14,7 @@ const GoogleTokenBanService_1 = require("./GoogleTokenBanService");
 const logger_1 = require("../../utils/logger");
 class AuthServiceSelf {
     static async login(username, password, device, ip) {
+        logger_1.globalLogger.logger().setService("auth_service");
         logger_1.globalLogger.logger().info(`Login started for ${username}`);
         const user = await User_1.default.findOne({ username });
         if (!user)
@@ -31,6 +32,7 @@ class AuthServiceSelf {
         return pair;
     }
     static async register(username, password, email, device, ip) {
+        logger_1.globalLogger.logger().setService("auth_service");
         logger_1.globalLogger.logger().info(`Registration started for ${username}`);
         const username_valid = await User_1.default.findOne({ username });
         const email_valid = await User_1.default.findOne({ email });
@@ -48,6 +50,7 @@ class AuthServiceSelf {
         return pair;
     }
     static async logout(session) {
+        logger_1.globalLogger.logger().setService("auth_service");
         logger_1.globalLogger.logger().info(`Logout started for user ${session.user}`);
         const user = await User_1.default.findById(session.user);
         if (!user)
@@ -57,6 +60,7 @@ class AuthServiceSelf {
         logger_1.globalLogger.logger().info(`Logout completed for user ${session.user}`);
     }
     static async closeSession(sessionId, userId) {
+        logger_1.globalLogger.logger().setService("auth_service");
         logger_1.globalLogger.logger().info(`Close session started for user ${userId}`);
         const user = await User_1.default.findById(userId);
         if (!user)
@@ -69,6 +73,7 @@ class AuthServiceSelf {
         logger_1.globalLogger.logger().info(`Close session completed for user ${userId}`);
     }
     static async refresh(refreshToken) {
+        logger_1.globalLogger.logger().setService("auth_service");
         logger_1.globalLogger.logger().info(`Refresh started`);
         await JWTService_1.JWTService.checkBanByToken(refreshToken);
         const session = await JWTService_1.JWTService.validateRefreshToken(refreshToken);
@@ -87,6 +92,7 @@ class AuthServiceSelf {
         return newPair;
     }
     static async getAllSessions(userId) {
+        logger_1.globalLogger.logger().setService("auth_service");
         logger_1.globalLogger.logger().info(`Get all sessions started for user ${userId}`);
         const user = await User_1.default.findById(userId);
         if (!user)
@@ -95,6 +101,7 @@ class AuthServiceSelf {
         return user.sessions;
     }
     static async loginUsingGoogle(googleAccessToken, device, ip) {
+        logger_1.globalLogger.logger().setService("auth_service");
         logger_1.globalLogger.logger().info(`Google login started`);
         await GoogleTokenBanService_1.GoogleTokenBanService.checkBan(googleAccessToken);
         const client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -122,9 +129,7 @@ class AuthServiceSelf {
             user.sessions.push(session);
             user.lastLogin = new Date();
             await user.save();
-            logger_1.globalLogger
-                .logger()
-                .info(`Google login completed for new user ${profile.email}`);
+            logger_1.globalLogger.logger().info(`Google login completed for new user ${profile.email}`);
             let pair = JWTService_1.JWTService.generatePair(session, familyId);
             return pair;
         }
@@ -140,9 +145,7 @@ class AuthServiceSelf {
             user_.sessions.push(session);
             user_.lastLogin = new Date();
             await user_.save();
-            logger_1.globalLogger
-                .logger()
-                .info(`Google login completed for existing user ${profile.email}`);
+            logger_1.globalLogger.logger().info(`Google login completed for existing user ${profile.email}`);
             let pair = JWTService_1.JWTService.generatePair(session, familyId);
             return pair;
         }
