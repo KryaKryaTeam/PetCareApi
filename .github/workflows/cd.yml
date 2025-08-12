@@ -43,8 +43,8 @@ jobs:
             - name: 🐧 Deploy via SSH
               run: |
                   ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+                  cp .env ./PetCareApi
                   cd ~/PetCareApi
-                  echo "${ENV_CONFIG}" > .env
                   sudo docker compose up --build -d
                   EOF
               env:
