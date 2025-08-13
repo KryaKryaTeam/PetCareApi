@@ -29,9 +29,8 @@ jobs:
 
             - name: 🌐 Set up ssh
               run: |
-                  mkdir -p ~/.ssh
+                  install -m 600 -D /dev/null ~/.ssh/id_rsa
                   echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-                  chmod 600 ~/.ssh/id_rsa
                   ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
             - name: 🌐 Delete previous build
@@ -47,5 +46,4 @@ jobs:
                   cd ~/PetCareApi
                   sudo docker compose up --build -d
                   EOF
-              env:
-                  ENV_CONFIG: ${{ secrets.ENV_CONFIG }}
+
