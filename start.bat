@@ -6,6 +6,7 @@ echo Set up env config for start
 set "ENV_FILE=.env"
 set "SWAGGER_HOST=localhost:3000"
 set "SWAGGER_SCHEMA=http"
+set "TEST_RUN=false"
 
 :: Prompt if it's a dev start
 :isDEV

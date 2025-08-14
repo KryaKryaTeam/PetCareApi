@@ -1,0 +1,70 @@
+services:
+    main:
+        build: ./
+        volumes:
+            - ./:/src
+            - deps:/src/node_modules
+        depends_on:
+            - mongo
+        networks:
+            - mongo_net
+            - monitoring
+        ports:
+            - 3000:3000
+        environment:
+            - MONGO_URL=mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin
+            - PORT=3000
+            - DEV_MODE=false
+            - TEST_RUN=false
+            - SWAGGER_HOST=${SWAGGER_HOST}
+            - SWAGGER_SCHEMA=${SWAGGER_SCHEMA}
+            - JWT_SECRET_ACCESS=${JWT_SECRET_ACCESS}
+            - JWT_SECRET_REFRESH=${JWT_SECRET_REFRESH}
+            - SESSION_EXP_TIME=${SESSION_EXP_TIME}
+            - JWT_ACCESS_EXP=${JWT_ACCESS_EXP}
+            - JWT_REFRESH_EXP=${JWT_REFRESH_EXP}
+            - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+            - FRONTEND_URL=${FRONTEND_URL}
+            - COOKIE_DOMAIN=${COOKIE_DOMAIN}
+            - LOKI_HOST=http://grafana-loki:3100
+        command: npm run start
+    mongo:
+        image: mongodb/mongodb-community-server:6.0-ubi8
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=admin
+            - MONGO_INITDB_ROOT_PASSWORD=password12341234
+        volumes:
+            - mongo_data:/data/db
+        networks:
+            - mongo_net
+        ports:
+            - "27017:27017"
+    alloy:
+        image: grafana/alloy:latest
+        command:
+            - run
+            - --server.http.listen-addr=0.0.0.0:12345
+            - "--storage.path=/var/lib/alloy/data"
+            - "/etc/alloy/config.alloy"
+        volumes:
+            - ./config.alloy:/etc/alloy/config.alloy
+            - alloy_data:/var/lib/alloy/data
+        ports:
+            - "12345:12345" # Alloy UI
+        networks:
+            - monitoring
+    grafana-loki:
+        image: grafana/loki
+        volumes:
+            - loki:/loki
+        networks:
+            - monitoring
+networks:
+    mongo_net:
+    monitoring:
+
+volumes:
+    mongo_data:
+    deps:
+    loki:
+    alloy_data:

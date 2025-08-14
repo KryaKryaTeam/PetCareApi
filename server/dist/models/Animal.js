@@ -9,7 +9,11 @@ const AnimalSchema = new mongoose_1.default.Schema({
     age: { type: Number, required: true, min: 0, max: 1000 },
     weight: { type: Number, required: true, min: 0, max: 150 },
     breed: { type: mongoose_1.default.SchemaTypes.ObjectId, ref: "Breed", required: true },
-    animalType: { type: mongoose_1.default.SchemaTypes.ObjectId, ref: "AnimalType", required: true },
+    animalType: {
+        type: mongoose_1.default.SchemaTypes.ObjectId,
+        ref: "AnimalType",
+        required: true,
+    },
     documents: [{ type: mongoose_1.default.SchemaTypes.ObjectId, ref: "Document" }],
     injections: [{ type: mongoose_1.default.SchemaTypes.ObjectId, ref: "Injection" }],
     gender: { type: String, enum: ["male", "female", "unknown"] },

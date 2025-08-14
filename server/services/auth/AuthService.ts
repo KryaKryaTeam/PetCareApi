@@ -5,16 +5,19 @@ import { IJWTPair, JWTService } from "./JWTService"
 import { SessionService } from "./SessionService"
 import { OAuth2Client } from "google-auth-library"
 import { GoogleTokenBanService } from "./GoogleTokenBanService"
+import { globalLogger } from "../../utils/logger"
 
 export class AuthServiceSelf {
     static async login(username: string, password: string, device: string, ip: string): Promise<IJWTPair> {
+        globalLogger.logger().setService("auth_service")
+        globalLogger.logger().info(`Login started for ${username}`)
         const user = await User.findOne({ username })
+
         if (!user) throw ApiError.badrequest("user with this username is undefined")
 
         if (!HashService.check(user.passwordHash, password)) throw ApiError.unauthorized("password is incorrect")
 
         let familyId = JWTService.generateFamilyId()
-
         let session = SessionService.generateNew(device, ip, "self", user.id, familyId)
 
         user.sessions.splice(
@@ -26,6 +29,7 @@ export class AuthServiceSelf {
         user.lastLogin = new Date()
 
         await user.save()
+        globalLogger.logger().info(`Login completed for ${username}`)
 
         let pair = JWTService.generatePair(session, familyId)
 
@@ -38,6 +42,8 @@ export class AuthServiceSelf {
         device: string,
         ip: string
     ): Promise<IJWTPair> {
+        globalLogger.logger().setService("auth_service")
+        globalLogger.logger().info(`Registration started for ${username}`)
         const username_valid = await User.findOne({ username })
         const email_valid = await User.findOne({ email })
         if (username_valid || email_valid)
@@ -56,11 +62,14 @@ export class AuthServiceSelf {
         )
         user.sessions.push(session)
         await user.save()
+        globalLogger.logger().info(`Registration completed for ${username}`)
 
         let pair = JWTService.generatePair(session, familyId)
         return pair
     }
     static async logout(session: IUserSession) {
+        globalLogger.logger().setService("auth_service")
+        globalLogger.logger().info(`Logout started for user ${session.user}`)
         const user = await User.findById(session.user)
         if (!user) throw ApiError.badrequest("user to logout undefined")
         user.sessions.splice(
@@ -68,8 +77,11 @@ export class AuthServiceSelf {
             1
         )
         await user.save()
+        globalLogger.logger().info(`Logout completed for user ${session.user}`)
     }
     static async closeSession(sessionId: string, userId: string) {
+        globalLogger.logger().setService("auth_service")
+        globalLogger.logger().info(`Close session started for user ${userId}`)
         const user = await User.findById(userId)
         if (!user) throw ApiError.badrequest("undefined user")
         const session = user.sessions.find((a) => a.sessionId == sessionId)
@@ -79,8 +91,11 @@ export class AuthServiceSelf {
             user.sessions.findIndex((a) => a.sessionId == session.sessionId),
             1
         )
+        globalLogger.logger().info(`Close session completed for user ${userId}`)
     }
     static async refresh(refreshToken: string): Promise<IJWTPair> {
+        globalLogger.logger().setService("auth_service")
+        globalLogger.logger().info(`Refresh started`)
         await JWTService.checkBanByToken(refreshToken)
         const session = await JWTService.validateRefreshToken(refreshToken)
 
@@ -98,17 +113,23 @@ export class AuthServiceSelf {
         user.sessions.push(session)
 
         await user.save()
+        globalLogger.logger().info(`Refresh completed for user ${session.user}`)
 
         const ban = await JWTService.banPairByToken(refreshToken)
         const newPair = JWTService.generatePair(session, familyId)
         return newPair
     }
     static async getAllSessions(userId: string) {
+        globalLogger.logger().setService("auth_service")
+        globalLogger.logger().info(`Get all sessions started for user ${userId}`)
         const user = await User.findById(userId)
         if (!user) throw ApiError.badrequest("user undefined")
+        globalLogger.logger().info(`Get all sessions completed for user ${userId}`)
         return user.sessions
     }
     static async loginUsingGoogle(googleAccessToken: string, device: string, ip: string) {
+        globalLogger.logger().setService("auth_service")
+        globalLogger.logger().info(`Google login started`)
         await GoogleTokenBanService.checkBan(googleAccessToken)
         const client: OAuth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
@@ -116,7 +137,6 @@ export class AuthServiceSelf {
             idToken: googleAccessToken,
             audience: process.env.GOOGLE_CLIENT_ID,
         })
-        // const tokenInfo = await client.getTokenInfo(googleAccessToken)
         client.credentials.access_token = googleAccessToken
 
         const profile = ticket.getPayload()
@@ -148,6 +168,7 @@ export class AuthServiceSelf {
             user.lastLogin = new Date()
 
             await user.save()
+            globalLogger.logger().info(`Google login completed for new user ${profile.email}`)
 
             let pair = JWTService.generatePair(session, familyId)
             return pair
@@ -171,6 +192,7 @@ export class AuthServiceSelf {
             user_.lastLogin = new Date()
 
             await user_.save()
+            globalLogger.logger().info(`Google login completed for existing user ${profile.email}`)
 
             let pair = JWTService.generatePair(session, familyId)
 

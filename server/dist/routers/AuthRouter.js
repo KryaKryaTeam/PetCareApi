@@ -94,9 +94,7 @@ router.post("/refresh", (0, express_validator_1.cookie)("refresh").notEmpty().is
 });
 router.post(
 // #swagger.tags = ["Auth"]
-"/login/google", (0, express_validator_1.body)("accessToken")
-    .notEmpty()
-    .matches(/^ya29\.[A-Za-z0-9\-_\.]+$/), validationMiddleware_1.validationMiddleware, async (req, res, next) => {
+"/login/google", (0, express_validator_1.body)("accessToken").notEmpty().isJWT(), validationMiddleware_1.validationMiddleware, async (req, res, next) => {
     const { accessToken } = req.body;
     const ip = req.ip;
     const userAgent = req.headers["user-agent"];

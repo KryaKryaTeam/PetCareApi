@@ -1,0 +1,69 @@
+name: Continuos deployment
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: 📥 Checkout repository
+              uses: actions/checkout@v4
+
+            - name: 🟨 Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - name: 📥 Install deps
+              run: npm i
+              working-directory: ./server
+
+            - name: 🔁 Build project
+              run: npm run build
+              working-directory: ./server
+
+            - name: Remove old build
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: 22
+                  script: |
+                      sudo rm -rf ~/PetCareApi
+                      
+            - name: Copy new build to server
+              uses: appleboy/scp-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: 22
+                  strip_components: 2
+                  source: ./server/dist/*
+                  target: ~/PetCareApi/
+                  
+            - name: Make deploy on server
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: 22
+                  script: |
+                      set -e
+                      echo "Setting up .env..."
+                      cp ~/config.env ~/PetCareApi || echo "config.env not found, skipping copy"
+                
+                      echo "Navigating to project directory..."
+                      cd ~/PetCareApi
+                
+                      echo "Starting Docker Compose deployment..."
+                      sudo docker compose --env-file ./config.env up --build -d 
+
+
+
+
+

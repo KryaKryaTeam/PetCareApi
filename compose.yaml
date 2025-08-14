@@ -8,12 +8,14 @@ services:
             - mongo
         networks:
             - mongo_net
+            - monitoring
         ports:
             - 3000:3000
         environment:
             - MONGO_URL=mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin
             - PORT=3000
             - DEV_MODE=${DEV_MODE}
+            - TEST_RUN=${TEST_RUN}
             - SWAGGER_HOST=${SWAGGER_HOST}
             - SWAGGER_SCHEMA=${SWAGGER_SCHEMA}
             - JWT_SECRET_ACCESS=${JWT_SECRET_ACCESS}
@@ -24,7 +26,8 @@ services:
             - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
             - FRONTEND_URL=${FRONTEND_URL}
             - COOKIE_DOMAIN=${COOKIE_DOMAIN}
-        command: sh -c "if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi"
+            - LOKI_HOST=http://grafana-loki:3100
+        command: sh -c "if [ "$TEST_RUN" = "false" ]; then if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi; else npm run test; fi"
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8
         environment:
@@ -36,10 +39,42 @@ services:
             - mongo_net
         ports:
             - "27017:27017"
+    alloy:
+        image: grafana/alloy:latest
+        command:
+            - run
+            - --server.http.listen-addr=0.0.0.0:12345
+            - "--storage.path=/var/lib/alloy/data"
+            - "/etc/alloy/config.alloy"
+        volumes:
+            - ./config.alloy:/etc/alloy/config.alloy
+            - alloy_data:/var/lib/alloy/data
+        ports:
+            - "12345:12345" # Alloy UI
+        networks:
+            - monitoring
+    grafana-loki:
+        image: grafana/loki
+        volumes:
+            - loki:/loki
+        networks:
+            - monitoring
+    grafana:
+        image: grafana/grafana
+        ports:
+            - "4000:3000"
+        networks:
+            - monitoring
+        volumes:
+            - grafana:/var/lib/grafana
 
 networks:
     mongo_net:
+    monitoring:
 
 volumes:
     mongo_data:
     deps:
+    loki:
+    grafana:
+    alloy_data:

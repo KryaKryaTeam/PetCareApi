@@ -18,6 +18,7 @@ const BreedSchema = new mongoose_1.default.Schema({
         maxlength: 50,
     },
     recomendations: [RecomendationSchema],
+    animalType: { type: mongoose_1.default.SchemaTypes.ObjectId, ref: "AnimalType", required: true },
     createdAt: { type: Date, default: new Date() },
 });
 exports.default = mongoose_1.default.model("Breed", BreedSchema);
