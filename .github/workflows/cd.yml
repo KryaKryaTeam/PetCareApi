@@ -44,6 +44,7 @@ jobs:
                   username: ${{ secrets.SSH_USERNAME }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: 22
+                  strip-components: 2
                   source: ./server/dist/*
                   target: ~/PetCareApi/
                   
