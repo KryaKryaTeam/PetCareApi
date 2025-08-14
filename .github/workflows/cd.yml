@@ -57,13 +57,13 @@ jobs:
                   script: |
                       set -e
                       echo "Setting up .env..."
-                      cp ~/.env ~/PetCareApi || echo ".env not found, skipping copy"
+                      cp ~/config.env ~/PetCareApi || echo "config.env not found, skipping copy"
                 
                       echo "Navigating to project directory..."
                       cd ~/PetCareApi
                 
                       echo "Starting Docker Compose deployment..."
-                      docker compose up --build -d
+                      docker compose --env-file ./config.env up --build -d 
 
 
 

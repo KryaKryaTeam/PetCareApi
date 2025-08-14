@@ -1,8 +1,8 @@
 services:
     main:
-        build: ./dist
+        build: ./
         volumes:
-            - ./dist:/src
+            - ./:/src
             - deps:/src/node_modules
         depends_on:
             - mongo
