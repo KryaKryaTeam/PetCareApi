@@ -45,7 +45,7 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: 22
                   source: ./server/dist/*
-                  target: ~/PetCareApi
+                  target: ~/PetCareApi/
                   
             - name: Make deploy on server
               uses: appleboy/ssh-action@v1
