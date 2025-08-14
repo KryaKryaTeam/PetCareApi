@@ -44,7 +44,7 @@ jobs:
                   username: ${{ secrets.SSH_USERNAME }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: 22
-                  source: ./server/dist
+                  source: ./server/dist/*
                   target: ~/PetCareApi
                   
             - name: Make deploy on server
