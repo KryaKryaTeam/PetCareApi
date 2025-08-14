@@ -1,8 +1,8 @@
 services:
     main:
-        build: ./dist
+        build: ./
         volumes:
-            - ./dist:/src
+            - ./:/src
             - deps:/src/node_modules
         depends_on:
             - mongo
@@ -27,7 +27,7 @@ services:
             - FRONTEND_URL=${FRONTEND_URL}
             - COOKIE_DOMAIN=${COOKIE_DOMAIN}
             - LOKI_HOST=http://grafana-loki:3100
-        command: npm run start"
+        command: npm run start
     mongo:
         image: mongodb/mongodb-community-server:6.0-ubi8
         environment:
