@@ -55,8 +55,15 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: 22
                   script: |
-                      sudo cp ~/.env ~/PetCareApi
+                      set -e
+                      echo "Setting up .env..."
+                      cp ~/.env ~/PetCareApi || echo ".env not found, skipping copy"
+                
+                      echo "Navigating to project directory..."
                       cd ~/PetCareApi
-                      sudo docker compose up --build -d
+                
+                      echo "Starting Docker Compose deployment..."
+                      docker compose up --build -d
+
 
 
