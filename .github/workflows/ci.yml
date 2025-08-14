@@ -35,6 +35,7 @@ jobs:
 
     build:
         runs-on: ubuntu-latest
+        needs: [ test ]
         steps:
             - name: 📥 Checkout repository
               uses: actions/checkout@v4
@@ -55,3 +56,4 @@ jobs:
             - name: ✅ Show output files
               working-directory: server/
               run: ls -R dist
+
