@@ -27,23 +27,36 @@ jobs:
               run: npm run build
               working-directory: ./server
 
-            - name: 🌐 Set up ssh
-              run: |
-                  install -m 600 -D /dev/null ~/.ssh/id_rsa
-                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-                  ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+            - name: Remove old build
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: 22
+                  script: |
+                      sudo rm -rf ~/PetCareApi
+                      
+            - name: Copy new build to server
+              uses: appleboy/scp-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: 22
+                  source: ./server/dist
+                  target: ~/PetCareApi
+                  
+            - name: Make deploy on server
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: 22
+                  script: |
+                      sudo cp ~/.env ~/PetCareApi
+                      cd ~/PetCareApi
+                      sudo docker compose up --build -d
 
-            - name: 🌐 Delete previous build
-              run: ssh ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} "sudo rm -rf ./PetCareApi"
-
-            - name: 🌐 Send build
-              run: scp -r ./server/dist ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}}:~/PetCareApi
-
-            - name: 🐧 Deploy via SSH
-              run: |
-                  ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-                  sudo cp ~/.env ~/PetCareApi
-                  cd ~/PetCareApi
-                  sudo docker compose up --build -d
-                  EOF
 
