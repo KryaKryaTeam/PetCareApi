@@ -7,7 +7,7 @@
         "swagger": "node swagger.cjs",
         "swagger-build": "node ./dist/swagger.cjs",
         "dev": "nodemon",
-        "start": "node dist/index.js",
+        "start": "node index.js",
         "build": "del-cli ./dist && tsc && copyfiles ./swagger.cjs ./dist && copyfiles -f ./production/* ./dist && copyfiles -f ./package*.json ./dist"
     },
     "keywords": [],
