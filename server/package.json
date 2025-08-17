@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "test": "vitest ./tests/",
+    "test": "bun test ./tests/",
     "swagger": "bun swagger.cjs",
     "swagger-build": "bun ./dist/swagger.cjs",
     "dev": "bun run index.ts --watch",

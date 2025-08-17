@@ -1,10 +1,5 @@
-import "vitest"
-import { expect, test } from "vitest"
+import { test, expect } from "bun:test";
 
 test("Test test", () => {
-    expect(
-        ((num1, num2) => {
-            return num1 + num2
-        })(1, 2)
-    ).toBe(3)
-})
+  expect(1 + 2).toBe(3);
+});
