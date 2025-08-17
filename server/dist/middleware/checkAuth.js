@@ -27,5 +27,6 @@ async function checkAuth(req, res, next) {
         throw ApiError_1.ApiError.unauthorized("session not allowed");
     logger_1.globalLogger.logger().info(`Session ${session.sessionId} is authicated!`);
     req.session = session;
+    req.user = user;
     next();
 }

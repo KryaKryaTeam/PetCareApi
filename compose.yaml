@@ -28,7 +28,7 @@ services:
       - FRONTEND_URL=${FRONTEND_URL}
       - COOKIE_DOMAIN=${COOKIE_DOMAIN}
       - LOKI_HOST=http://grafana-loki:3100
-    command: sh -c "if [ "$TEST_RUN" = "false" ]; then if [ "$DEV_MODE" = "false" ]; then npm start; else npm run test; npm run swagger && npm run dev; fi; else npm run test; fi"
+    command: sh -c "if [ "$TEST_RUN" = "false" ]; then if [ "$DEV_MODE" = "false" ]; then bun start; else bun run test; bun run swagger && bun run dev; fi; else bun run test; fi"
   mongo:
     image: mongodb/mongodb-community-server:6.0-ubi8
     environment:

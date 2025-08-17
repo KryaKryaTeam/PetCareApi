@@ -12,16 +12,16 @@ const router = express_1.default.Router();
 router.post(
 // #swagger.tags = ["Auth"]
 /* #swagger.requestBody = {
-        required: true,
-        content: {
-            "application/json": {
-                schema: {
-                    $ref: "#/components/schemas/SelfLoginSchema"
-                }
-            }
-        }
-    }
-*/
+          required: true,
+          content: {
+              "application/json": {
+                  schema: {
+                      $ref: "#/components/schemas/SelfLoginSchema"
+                  }
+              }
+          }
+      }
+  */
 "/login/self", (0, express_validator_1.body)("username").notEmpty().isLength({ min: 3, max: 100 }), (0, express_validator_1.body)("password")
     .notEmpty()
     .isLength({ min: 8, max: 100 })
@@ -41,16 +41,16 @@ router.post(
 router.post(
 // #swagger.tags = ["Auth"]
 /* #swagger.requestBody = {
-        required: true,
-        content: {
-            "application/json": {
-                schema: {
-                    $ref: "#/components/schemas/SelfRegisterSchema"
-                }
-            }
-        }
-    }
-*/
+          required: true,
+          content: {
+              "application/json": {
+                  schema: {
+                      $ref: "#/components/schemas/SelfRegisterSchema"
+                  }
+              }
+          }
+      }
+  */
 "/register/self", (0, express_validator_1.body)("username").notEmpty().isLength({ min: 3, max: 100 }), (0, express_validator_1.body)("password")
     .notEmpty()
     .isLength({ min: 8, max: 100 })

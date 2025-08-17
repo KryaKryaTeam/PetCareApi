@@ -12,7 +12,6 @@ const router = express_1.default.Router();
 router.get("/", checkAuth_1.checkAuth, async (req, res, next) => {
     // #swagger.tags = ["Profile"]
     // #swagger.security = [{ "bearerAuth": [] }]
-    //@ts-ignore
     const session = req.session;
     const result = await ProfileService_1.ProfileService.getProfile(session.user.toString());
     res.json({ profile: result }).status(200);
@@ -20,7 +19,6 @@ router.get("/", checkAuth_1.checkAuth, async (req, res, next) => {
 router.post("/avatar/url", (0, express_validator_1.body)("avatar").notEmpty().isURL(), validationMiddleware_1.validationMiddleware, checkAuth_1.checkAuth, async (req, res, next) => {
     // #swagger.tags = ["Profile"]
     // #swagger.security = [{ "bearerAuth": [] }]
-    //@ts-ignore
     const session = req.session;
     const { avatar } = req.body;
     const result = await ProfileService_1.ProfileService.changeAvatar(avatar, session.user.toString());

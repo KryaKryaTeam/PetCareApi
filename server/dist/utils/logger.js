@@ -58,16 +58,14 @@ class Logger {
                 message +
                 "</span>", { flag: "a" });
         }
-        else {
-            fs_1.default.writeFileSync(path_1.default.join(__dirname, "..", "logs", "requests.log"), JSON.stringify({
-                level,
-                data: new Date(),
-                message,
-                requestId: this.requestId,
-                endpoint: this.endpoint,
-                service: this.service || "none",
-            }) + "\n", { flag: "a" });
-        }
+        fs_1.default.writeFileSync(path_1.default.join(__dirname, "..", "logs", "requests.log"), JSON.stringify({
+            level,
+            data: new Date(),
+            message,
+            requestId: this.requestId,
+            endpoint: this.endpoint,
+            service: this.service || "none",
+        }) + "\n", { flag: "a" });
         console.log("\n -" + new Date().toTimeString() + "   " + message);
     }
     setService(service) {
