@@ -4,7 +4,6 @@ import type { Document } from "mongoose";
 
 export interface IAnimal {
   name: string;
-  age: number;
   weight: number;
   breed: string;
   animalType: string;
@@ -14,16 +13,15 @@ export interface IAnimal {
   avatar: string;
   documents?: string[];
   injections?: string[];
-  gender?: "male" | "female" | "unknown";
+  gender: "male" | "female" | "unknown";
   chipId?: string;
-  registeredAt?: Date;
+  registeredAt: Date;
   notes?: string[];
-  status?: "active" | "archived";
+  status: "active" | "archived";
 }
 
 export interface IAnimalModel extends Document {
   name: string;
-  age: number;
   weight: number;
   breed: ObjectId;
   animalType: ObjectId;
@@ -33,30 +31,34 @@ export interface IAnimalModel extends Document {
   avatar: string;
   documents?: ObjectId[];
   injections?: ObjectId[];
-  gender?: "male" | "female" | "unknown";
+  gender: "male" | "female" | "unknown";
   chipId?: string;
-  registeredAt?: Date;
+  registeredAt: Date;
   notes?: ObjectId[];
-  status?: "active" | "archived";
+  status: "active" | "archived";
 }
 
 const AnimalSchema = new mongoose.Schema<IAnimalModel>({
   name: { type: String, required: true },
-  age: { type: Number, required: true, min: 0, max: 1000 },
   weight: { type: Number, required: true, min: 0, max: 150 },
   breed: { type: mongoose.SchemaTypes.ObjectId, ref: "Breed", required: true },
   animalType: {
     type: mongoose.SchemaTypes.ObjectId,
-    ref: "AnimalType",
+    ref: "Animaltype",
     required: true,
   },
   documents: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Document" }],
   injections: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Injection" }],
-  gender: { type: String, enum: ["male", "female", "unknown"] },
+  gender: {
+    type: String,
+    enum: ["male", "female", "unknown"],
+    required: true,
+    default: "unknown",
+  },
   chipId: { type: String, unique: true },
   birthDate: { type: Date, required: true },
   registeredAt: { type: Date, default: Date.now() },
-  isSterilized: { type: Boolean, required: true },
+  isSterilized: { type: Boolean, required: true, default: false },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   avatar: { type: String, required: true, unique: true },
   notes: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Note" }],

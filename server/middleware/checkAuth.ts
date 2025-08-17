@@ -33,6 +33,7 @@ export async function checkAuth(
 
   globalLogger.logger().info(`Session ${session.sessionId} is authicated!`);
   req.session = session;
+  req.user = user;
 
   next();
 }
