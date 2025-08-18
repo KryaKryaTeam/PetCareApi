@@ -7,12 +7,24 @@ import { BreedService } from "../services/BreedService";
 
 const router = express.Router();
 
-router.use(checkAuth, AdminRoleMiddleware);
 
+router.get(
+  // #swagger.tags = ["Breed"]
+  "/",
+  validationMiddleware,
+  async (req, res, next) => {
+    const result =  await BreedService.getAll()
+    res.json({
+      breeds: result
+    }).status(200)
+  }
+)
 router.post(
   // #swagger.tags = ["Breed"]
   // #swagger.security = [{ "bearerAuth": [] }]
   "/create",
+  checkAuth,
+  AdminRoleMiddleware,
   body("name").notEmpty().isLength({ min: 3, max: 150 }),
   body("animalType").notEmpty().isLength({ min: 3, max: 150 }),
   validationMiddleware,
@@ -28,6 +40,8 @@ router.delete(
   // #swagger.tags = ["Breed"]
   // #swagger.security = [{ "bearerAuth": [] }]
   "/delete/:id",
+  checkAuth,
+  AdminRoleMiddleware,
   param("id").notEmpty().isMongoId(),
   validationMiddleware,
   async (req, res, next) => {
@@ -43,6 +57,8 @@ router.post(
   // #swagger.tags = ["Breed"]
   // #swagger.security = [{ "bearerAuth": [] }]
   "/rec/create",
+  checkAuth,
+  AdminRoleMiddleware,
   body("breedId").notEmpty().isMongoId(),
   body("recomendation_name").notEmpty().isLength({ min: 3, max: 150 }),
   body("recomendation_content").notEmpty().isLength({ min: 3, max: 1000 }),
@@ -63,6 +79,8 @@ router.delete(
   // #swagger.tags = ["Breed"]
   // #swagger.security = [{ "bearerAuth": [] }]
   "/rec/delete/:breedId/:name",
+  checkAuth,
+  AdminRoleMiddleware,
   param("breedId").notEmpty().isMongoId(),
   param("name").notEmpty().isLength({ min: 3, max: 150 }),
   validationMiddleware,

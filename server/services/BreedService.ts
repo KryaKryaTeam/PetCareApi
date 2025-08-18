@@ -71,4 +71,10 @@ export class BreedService {
         if (!breed) throw ApiError.badrequest("Breed with this id is undefined!")
         return breed
     }
+    static async getAll(){
+        globalLogger.logger().setService("breed_service")
+        
+        const breeds = await Breed.find();
+        return breeds
+    }
 }
