@@ -22,7 +22,7 @@ export interface IBreedModel extends Document {
 
 const RecomendationSchema = new mongoose.Schema<IRecomendation>(
     {
-        name: { type: String, required: true, unique: true, max: 100 },
+        name: { type: String, required: true, max: 100 },
         content: { type: String, required: true, max: 1000 },
     },
     { _id: false }
