@@ -5,7 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoogleBannedToken = exports.SelfBannedToken = exports.BannedToken = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const opts = { discriminatorKey: "variant", timestamps: { createdAt: true, updatedAt: false } };
+const opts = {
+    discriminatorKey: "variant",
+    timestamps: { createdAt: true, updatedAt: false },
+};
 const BannedTokenSchema = new mongoose_1.default.Schema({
     sessionId: { type: String, required: true },
 }, opts);

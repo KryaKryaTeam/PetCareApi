@@ -7,6 +7,11 @@ import { router } from "./router"
 import { config } from "dotenv"
 import { ApiError } from "./error/ApiError"
 import cookieParser from "cookie-parser"
+import fs from "node:fs"
+import path from "node:path"
+import { AttachLogger } from "./middleware/AttachLogger"
+import "./types/express/index"
+import { isDevMode } from "./utils/isDevMode"
 
 config()
 
@@ -22,8 +27,15 @@ console.log(
     process.env.SWAGGER_SCHEMA
 )
 
+if (process.env.DEV_MODE) {
+    if (!fs.existsSync(path.join("./.dev"))) {
+        fs.mkdirSync(path.join("./.dev"))
+    }
+}
+
 const app = express()
 
+app.use(AttachLogger)
 app.use(
     cors({
         origin: [
@@ -39,11 +51,15 @@ app.use(express.json())
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc))
 app.use("/api", router)
 app.use((err, req, res, next) => {
-    console.log(new Date().toISOString() + " |ERROR| - " + err.message)
-    if (err instanceof ApiError) {
-        res.status(err.code).json({ message: err.message })
-    } else {
-        res.status(500).json({ message: Boolean(process.env.DEV_MODE) ? err.message : "message is not provided" })
+    if (err && err.message) {
+        if (req.logger) req.logger.error(err.message)
+        if (err instanceof ApiError) {
+            res.status(err.code).json({ message: err.message })
+        } else {
+            res.status(500).json({
+                message: isDevMode() ? err.message : "message is not provided",
+            })
+        }
     }
 })
 

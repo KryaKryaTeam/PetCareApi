@@ -12,16 +12,16 @@ const router = express_1.default.Router();
 router.post(
 // #swagger.tags = ["Auth"]
 /* #swagger.requestBody = {
-        required: true,
-        content: {
-            "application/json": {
-                schema: {
-                    $ref: "#/components/schemas/SelfLoginSchema"
-                }
-            }
-        }
-    }
-*/
+          required: true,
+          content: {
+              "application/json": {
+                  schema: {
+                      $ref: "#/components/schemas/SelfLoginSchema"
+                  }
+              }
+          }
+      }
+  */
 "/login/self", (0, express_validator_1.body)("username").notEmpty().isLength({ min: 3, max: 100 }), (0, express_validator_1.body)("password")
     .notEmpty()
     .isLength({ min: 8, max: 100 })
@@ -41,16 +41,16 @@ router.post(
 router.post(
 // #swagger.tags = ["Auth"]
 /* #swagger.requestBody = {
-        required: true,
-        content: {
-            "application/json": {
-                schema: {
-                    $ref: "#/components/schemas/SelfRegisterSchema"
-                }
-            }
-        }
-    }
-*/
+          required: true,
+          content: {
+              "application/json": {
+                  schema: {
+                      $ref: "#/components/schemas/SelfRegisterSchema"
+                  }
+              }
+          }
+      }
+  */
 "/register/self", (0, express_validator_1.body)("username").notEmpty().isLength({ min: 3, max: 100 }), (0, express_validator_1.body)("password")
     .notEmpty()
     .isLength({ min: 8, max: 100 })
@@ -94,9 +94,7 @@ router.post("/refresh", (0, express_validator_1.cookie)("refresh").notEmpty().is
 });
 router.post(
 // #swagger.tags = ["Auth"]
-"/login/google", (0, express_validator_1.body)("accessToken")
-    .notEmpty()
-    .matches(/^ya29\.[A-Za-z0-9\-_\.]+$/), validationMiddleware_1.validationMiddleware, async (req, res, next) => {
+"/login/google", (0, express_validator_1.body)("accessToken").notEmpty().isJWT(), validationMiddleware_1.validationMiddleware, async (req, res, next) => {
     const { accessToken } = req.body;
     const ip = req.ip;
     const userAgent = req.headers["user-agent"];

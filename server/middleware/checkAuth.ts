@@ -2,12 +2,14 @@ import express, { Request as ExpressRequest } from "express";
 import { ApiError } from "../error/ApiError";
 import { JWTService } from "../services/auth/JWTService";
 import User from "../models/User";
+import { globalLogger } from "../utils/logger";
 
 export async function checkAuth(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
+  globalLogger.logger().info("User authorization is starts");
   let authorization;
   try {
     authorization = req.headers.authorization.split(" ");
@@ -29,8 +31,9 @@ export async function checkAuth(
   if (!user.sessions.find((v) => v.sessionId == session.sessionId))
     throw ApiError.unauthorized("session not allowed");
 
-  //@ts-ignore
+  globalLogger.logger().info(`Session ${session.sessionId} is authicated!`);
   req.session = session;
+  req.user = user;
 
   next();
 }

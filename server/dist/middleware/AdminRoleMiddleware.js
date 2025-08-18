@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.middleware = middleware;
+exports.AdminRoleMiddleware = AdminRoleMiddleware;
 const ApiError_1 = require("../error/ApiError");
 const User_1 = __importDefault(require("../models/User"));
-async function middleware(req, res, next) {
+const logger_1 = require("../utils/logger");
+async function AdminRoleMiddleware(req, res, next) {
     //@ts-ignore
     const session = req.session;
     const user = await User_1.default.findById(session.user);
@@ -14,5 +15,6 @@ async function middleware(req, res, next) {
         throw ApiError_1.ApiError.forbidden("no access");
     if (!user.roles.includes("admin"))
         throw ApiError_1.ApiError.forbidden("no access");
+    logger_1.globalLogger.logger().info("administrator role confirmed");
     next();
 }

@@ -1,0 +1,57 @@
+name: Continuos integration
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DEV_MODE: "true"
+      TEST_RUN: "true"
+      GOOGLE_CLIENT_ID: "${{secrets.GOOGLE_CLIENT_ID}}"
+      FRONTEND_URL: "http://localhost:5127"
+      COOKIE_DOMAIN: "localhost"
+      JWT_SECRET_ACCESS: "${{secrets.JWT_SECRET_ACCESS}}"
+      JWT_SECRET_REFRESH: "${{secrets.JWT_SECRET_REFRESH}}"
+      SESSION_EXP_TIME: "10800000"
+      JWT_ACCESS_EXP: "3h"
+      JWT_REFRESH_EXP: "3d"
+      SWAGGER_HOST: "localhost:3000"
+      SWAGGER_SCHEMA: "http"
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Run doker compose
+        run: docker compose up --build --exit-code-from main
+
+      - name: ❌ Stop and remove containers
+        run: docker compose down -v
+        if: always()
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟨 Set up bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: 📦 Install dependencies
+        run: bun install
+        working-directory: server/
+
+      - name: 🔧 Compile TypeScript
+        run: bun run build
+        working-directory: server/
+
+      - name: ✅ Show output files
+        working-directory: server/
+        run: ls -R dist

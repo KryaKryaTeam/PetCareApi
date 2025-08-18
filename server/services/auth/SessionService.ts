@@ -1,5 +1,7 @@
 import type { Types } from "mongoose"
 import { IUserSession } from "../../models/User"
+import { generateId } from "../../utils/id_generateor"
+import { globalLogger } from "../../utils/logger"
 
 export class SessionService {
     static SessionTimestampStringToDate(session) {
@@ -15,6 +17,8 @@ export class SessionService {
         user: Types.ObjectId,
         familyId: string
     ) {
+        globalLogger.logger().setService("session_service")
+        globalLogger.logger().info("Session is created")
         const session: IUserSession = {
             sessionId: SessionService.generateSessionId(),
             familyId,
@@ -28,11 +32,6 @@ export class SessionService {
         return session
     }
     static generateSessionId() {
-        const allowed = "qwertyuiopasdfghjklzxcvbnm1234567890".split("")
-        let header = ""
-        for (let i = 0; i < 32; i++) {
-            header += allowed[Math.floor(Math.random() * allowed.length)]
-        }
-        return Date.now() + "-" + header
+        return generateId("session")
     }
 }

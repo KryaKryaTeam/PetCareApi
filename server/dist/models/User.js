@@ -16,8 +16,21 @@ const SessionSchema = new mongoose_1.default.Schema({
     user: { type: mongoose_1.default.SchemaTypes.ObjectId, required: true },
 }, { _id: false });
 exports.UserSchema = new mongoose_1.default.Schema({
-    username: { type: String, required: true, unique: true, trim: true, minlength: 3, maxlength: 100 },
-    email: { type: String, required: true, unique: true, lowercase: true, match: /^\S+@\S+\.\S+$/ },
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        minlength: 3,
+        maxlength: 100,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        match: /^\S+@\S+\.\S+$/,
+    },
     passwordHash: { type: String },
     isOAuth: { type: Boolean, default: false },
     googleId: { type: String, unique: true, sparse: true },
