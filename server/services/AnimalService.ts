@@ -1,5 +1,5 @@
 import { ApiError } from "../error/ApiError";
-import Animal from "../models/Animal";
+import Animal, { animal_gender } from "../models/Animal";
 import { globalLogger } from "../utils/logger";
 import { AnimalTypeService } from "./AnimalTypeService";
 import { BreedService } from "./BreedService";
@@ -13,7 +13,7 @@ export interface ArgAnimalModel {
   isSterilized: boolean;
   owner: string;
   avatar?: string;
-  gender: "male" | "female" | "unknown";
+  gender: animal_gender;
   chipId?: string;
 }
 
