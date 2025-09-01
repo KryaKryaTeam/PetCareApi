@@ -7,93 +7,91 @@ import { BreedService } from "../services/BreedService";
 
 const router = express.Router();
 
-
 router.get(
-  // #swagger.tags = ["Breed"]
-  "/",
-  validationMiddleware,
-  async (req, res, next) => {
-    const result =  await BreedService.getAll()
-    res.json({
-      breeds: result
-    }).status(200)
-  }
-)
+	// #swagger.tags = ["Breed"]
+	"/",
+	validationMiddleware,
+	async (_req, res) => {
+		const result = await BreedService.getAll();
+		res
+			.json({
+				breeds: result,
+			})
+			.status(200);
+	},
+);
 router.post(
-  // #swagger.tags = ["Breed"]
-  // #swagger.security = [{ "bearerAuth": [] }]
-  "/create",
-  checkAuth,
-  AdminRoleMiddleware,
-  body("name").notEmpty().isLength({ min: 3, max: 150 }),
-  body("animalType").notEmpty().isLength({ min: 3, max: 150 }),
-  validationMiddleware,
-  async (req, res, next) => {
-    const { name, animalType } = req.body;
+	// #swagger.tags = ["Breed"]
+	// #swagger.security = [{ "bearerAuth": [] }]
+	"/create",
+	checkAuth,
+	AdminRoleMiddleware,
+	body("name").notEmpty().isLength({ min: 3, max: 150 }),
+	body("animalType").notEmpty().isLength({ min: 3, max: 150 }),
+	validationMiddleware,
+	async (req, res) => {
+		const { name, animalType } = req.body;
 
-    const result = await BreedService.createNew(name, animalType);
+		const result = await BreedService.createNew(name, animalType);
 
-    res.json({ breed: result }).status(200);
-  }
+		res.json({ breed: result }).status(200);
+	},
 );
 router.delete(
-  // #swagger.tags = ["Breed"]
-  // #swagger.security = [{ "bearerAuth": [] }]
-  "/delete/:id",
-  checkAuth,
-  AdminRoleMiddleware,
-  param("id").notEmpty().isMongoId(),
-  validationMiddleware,
-  async (req, res, next) => {
-    const { id } = req.params;
+	// #swagger.tags = ["Breed"]
+	// #swagger.security = [{ "bearerAuth": [] }]
+	"/delete/:id",
+	checkAuth,
+	AdminRoleMiddleware,
+	param("id").notEmpty().isMongoId(),
+	validationMiddleware,
+	async (req, res) => {
+		const { id } = req.params;
 
-    await BreedService.deleteOne(id);
+		await BreedService.deleteOne(id);
 
-    res.json({ message: "OK!" }).status(200);
-  }
+		res.json({ message: "OK!" }).status(200);
+	},
 );
 
 router.post(
-  // #swagger.tags = ["Breed"]
-  // #swagger.security = [{ "bearerAuth": [] }]
-  "/rec/create",
-  checkAuth,
-  AdminRoleMiddleware,
-  body("breedId").notEmpty().isMongoId(),
-  body("recomendation_name").notEmpty().isLength({ min: 3, max: 150 }),
-  body("recomendation_content").notEmpty().isLength({ min: 3, max: 1000 }),
-  validationMiddleware,
-  async (req, res, next) => {
-    const { breedId, recomendation_name, recomendation_content } = req.body;
+	// #swagger.tags = ["Breed"]
+	// #swagger.security = [{ "bearerAuth": [] }]
+	"/rec/create",
+	checkAuth,
+	AdminRoleMiddleware,
+	body("breedId").notEmpty().isMongoId(),
+	body("recomendation_name").notEmpty().isLength({ min: 3, max: 150 }),
+	body("recomendation_content").notEmpty().isLength({ min: 3, max: 1000 }),
+	validationMiddleware,
+	async (req, res) => {
+		const { breedId, recomendation_name, recomendation_content } = req.body;
 
-    const result = await BreedService.addRecomendationToBreed(breedId, {
-      name: recomendation_name,
-      content: recomendation_content,
-    });
+		const result = await BreedService.addRecomendationToBreed(breedId, {
+			name: recomendation_name,
+			content: recomendation_content,
+		});
 
-    res.json({ breed: result }).status(200);
-  }
+		res.json({ breed: result }).status(200);
+	},
 );
 
 router.delete(
-  // #swagger.tags = ["Breed"]
-  // #swagger.security = [{ "bearerAuth": [] }]
-  "/rec/delete/:breedId/:name",
-  checkAuth,
-  AdminRoleMiddleware,
-  param("breedId").notEmpty().isMongoId(),
-  param("name").notEmpty().isLength({ min: 3, max: 150 }),
-  validationMiddleware,
-  async (req, res, next) => {
-    const { name, breedId } = req.params;
+	// #swagger.tags = ["Breed"]
+	// #swagger.security = [{ "bearerAuth": [] }]
+	"/rec/delete/:breedId/:name",
+	checkAuth,
+	AdminRoleMiddleware,
+	param("breedId").notEmpty().isMongoId(),
+	param("name").notEmpty().isLength({ min: 3, max: 150 }),
+	validationMiddleware,
+	async (req, res) => {
+		const { name, breedId } = req.params;
 
-    const result = await BreedService.deleteRecomendationFromBreed(
-      breedId,
-      name
-    );
+		const result = await BreedService.deleteRecomendationFromBreed(breedId, name);
 
-    res.json({ breed: result }).status(200);
-  }
+		res.json({ breed: result }).status(200);
+	},
 );
 
 export default router;

@@ -6,13 +6,13 @@ import AnimalTypeRouter from "./routers/AnimalTypeRouter";
 import AnimalRouter from "./routers/AnimalRouter";
 const router: Router = express.Router();
 
-router.get("/ping", (req, res, next) => {
-  // #swagger.tags = ["System", "NotSecured"]
-  req.logger.info("Test");
-  req.logger.error("Test");
-  req.logger.debbug("Test");
+router.get("/ping", (req, res) => {
+	// #swagger.tags = ["System", "NotSecured"]
+	req.logger.info("Test");
+	req.logger.error("Test");
+	req.logger.debbug("Test");
 
-  res.json({ message: "pong!" }).status(200);
+	res.json({ message: "pong!" }).status(200);
 });
 
 router.use("/user", AuthRouter);

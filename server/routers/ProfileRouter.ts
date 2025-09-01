@@ -5,34 +5,31 @@ import { body } from "express-validator";
 import { validationMiddleware } from "../middleware/validationMiddleware";
 const router = express.Router();
 
-router.get("/", checkAuth, async (req, res, next) => {
-  // #swagger.tags = ["Profile"]
-  // #swagger.security = [{ "bearerAuth": [] }]
+router.get("/", checkAuth, async (req, res) => {
+	// #swagger.tags = ["Profile"]
+	// #swagger.security = [{ "bearerAuth": [] }]
 
-  const session = req.session;
+	const session = req.session;
 
-  const result = await ProfileService.getProfile(session.user.toString());
+	const result = await ProfileService.getProfile(session.user.toString());
 
-  res.json({ profile: result }).status(200);
+	res.json({ profile: result }).status(200);
 });
 router.post(
-  "/avatar/url",
-  body("avatar").notEmpty().isURL(),
-  validationMiddleware,
-  checkAuth,
-  async (req, res, next) => {
-    // #swagger.tags = ["Profile"]
-    // #swagger.security = [{ "bearerAuth": [] }]
-    const session = req.session;
-    const { avatar } = req.body;
+	"/avatar/url",
+	body("avatar").notEmpty().isURL(),
+	validationMiddleware,
+	checkAuth,
+	async (req, res) => {
+		// #swagger.tags = ["Profile"]
+		// #swagger.security = [{ "bearerAuth": [] }]
+		const session = req.session;
+		const { avatar } = req.body;
 
-    const result = await ProfileService.changeAvatar(
-      avatar,
-      session.user.toString()
-    );
+		await ProfileService.changeAvatar(avatar, session.user.toString());
 
-    res.json({ message: "OK!" }).status(200);
-  }
+		res.json({ message: "OK!" }).status(200);
+	},
 );
 
 export default router;
