@@ -6,6 +6,8 @@ import { SelfBannedToken, IBannedTokenModel } from "../../models/BannedToken";
 import { globalLogger } from "../../utils/logger";
 import { generateId } from "../../utils/id_generateor";
 
+export type expString = `${number}Hours` | `${number}Days`;
+
 export interface IJWTPair {
 	accessToken: string;
 	refreshToken: string;
@@ -24,7 +26,7 @@ export class JWTService {
 			{ session, familyId: familyId || JWTService.generateFamilyId() },
 			process.env.JWT_SECRET_ACCESS,
 			{
-				expiresIn: process.env.JWT_ACCESS_EXP || "3h",
+				expiresIn: (process.env.JWT_ACCESS_EXP as expString) || "3Hours",
 			},
 		);
 		globalLogger.logger().info("Access token is signed");
@@ -32,7 +34,7 @@ export class JWTService {
 			{ session, familyId: familyId || JWTService.generateFamilyId() },
 			process.env.JWT_SECRET_REFRESH,
 			{
-				expiresIn: process.env.JWT_REFRESH_EXP || "3d",
+				expiresIn: (process.env.JWT_REFRESH_EXP as expString) || "3Days",
 			},
 		);
 		globalLogger.logger().info("Refresh token is signed");
@@ -60,12 +62,15 @@ export class JWTService {
 	static async validatePair(pair: IJWTPair): Promise<IUserSession> {
 		globalLogger.logger().setService("jwt_service");
 		globalLogger.logger().info("JWT pair validation is starts");
-		const decode1: any = verify(pair.accessToken, process.env.JWT_SECRET_ACCESS);
+		const decode1 = verify(
+			pair.accessToken,
+			process.env.JWT_SECRET_ACCESS,
+		) as IJWTPayload;
 		globalLogger.logger().info("Access token is validated");
-		const decode2: any = verify(
+		const decode2 = verify(
 			pair.refreshToken,
 			process.env.JWT_SECRET_REFRESH,
-		);
+		) as IJWTPayload;
 		globalLogger.logger().info("Refresh token is validated");
 
 		if (decode1.familyId != decode2.familyId)

@@ -1,7 +1,7 @@
 import express from "express";
 import { ApiError } from "../error/ApiError";
 import { JWTService } from "../services/auth/JWTService";
-import User from "../models/User";
+import User, { IUserSession } from "../models/User";
 import { globalLogger } from "../utils/logger";
 
 export async function checkAuth(
@@ -22,7 +22,9 @@ export async function checkAuth(
 			"Authorization token is not Bearer! If you send JWT without Bearer prefix add this.",
 		);
 
-	const session: any = await JWTService.validateToken(authorization[1]);
+	const session = (await JWTService.validateToken(
+		authorization[1],
+	)) as IUserSession;
 
 	const user = await User.findById(session.user);
 
