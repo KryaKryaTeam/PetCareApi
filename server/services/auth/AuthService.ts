@@ -245,4 +245,3 @@ export class AuthServiceSelf {
 			return pair;
 		}
 	}
-}
