@@ -144,11 +144,8 @@
         ]
       }
     },
-    "/user/login/google": {
+    "/user/*#swagger.tags=[Auth]*/login/google": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
         "description": "",
         "parameters": [
           {

@@ -15,6 +15,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@eslint/js": "^9.34.0",
     "@faker-js/faker": "^9.9.0",
     "@types/bun": "^1.2.20",
     "@types/jsonwebtoken": "^9.0.10",
@@ -31,7 +32,8 @@
     "multer": "^2.0.2",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.41.0"
   },
   "devDependencies": {
     "@types/axios": "^0.9.36",

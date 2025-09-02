@@ -1,26 +1,26 @@
-import express, { Request as ExpressRequest } from "express";
+import express from "express";
 import { ApiError } from "../error/ApiError";
 import { JWTService } from "../services/auth/JWTService";
-import User from "../models/User";
+import User, { IUserSession } from "../models/User";
 import { globalLogger } from "../utils/logger";
 
 export async function checkAuth(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+	req: express.Request,
+	_res: express.Response,
+	next: express.NextFunction,
 ) {
-  globalLogger.logger().info("User authorization is starts");
-  let authorization;
-  try {
-    authorization = req.headers.authorization.split(" ");
-  } catch (err) {
-    throw ApiError.unauthorized("Auth token is empty!");
-  }
+	globalLogger.logger().info("User authorization is starts");
+	let authorization;
+	try {
+		authorization = req.headers.authorization.split(" ");
+	} catch (_err) {
+		throw ApiError.unauthorized("Auth token is empty!");
+	}
 
-  if (authorization[0] != "Bearer")
-    throw ApiError.badrequest(
-      "Authorization token is not Bearer! If you send JWT without Bearer prefix add this."
-    );
+	if (authorization[0] != "Bearer")
+		throw ApiError.badrequest(
+			"Authorization token is not Bearer! If you send JWT without Bearer prefix add this.",
+		);
 
   let session: any;
   try {
@@ -29,16 +29,17 @@ export async function checkAuth(
     throw ApiError.unauthorized("Jwt validation is failed!");
   }
 
-  const user = await User.findById(session.user);
 
-  if (!user) throw ApiError.badrequest("User to login undefined");
+	const user = await User.findById(session.user);
 
-  if (!user.sessions.find((v) => v.sessionId == session.sessionId))
-    throw ApiError.unauthorized("session not allowed");
+	if (!user) throw ApiError.badrequest("User to login undefined");
 
-  globalLogger.logger().info(`Session ${session.sessionId} is authicated!`);
-  req.session = session;
-  req.user = user;
+	if (!user.sessions.find((v) => v.sessionId == session.sessionId))
+		throw ApiError.unauthorized("session not allowed");
 
-  next();
+	globalLogger.logger().info(`Session ${session.sessionId} is authicated!`);
+	req.session = session;
+	req.user = user;
+
+	next();
 }
