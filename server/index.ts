@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 import fs from "node:fs";
 import path from "node:path";
 import { AttachLogger } from "./middleware/AttachLogger";
-import "./types/express/index";
+// import "./types/express/index";
 import { isDevMode } from "./utils/isDevMode";
 
 config();
