@@ -22,13 +22,12 @@ export async function checkAuth(
 			"Authorization token is not Bearer! If you send JWT without Bearer prefix add this.",
 		);
 
-  let session: any;
-  try {
-    session = await JWTService.validateToken(authorization[1]);
-  } catch (err) {
-    throw ApiError.unauthorized("Jwt validation is failed!");
-  }
-
+	let session: IUserSession;
+	try {
+		session = await JWTService.validateToken(authorization[1]);
+	} catch {
+		throw ApiError.unauthorized("Jwt validation is failed!");
+	}
 
 	const user = await User.findById(session.user);
 
