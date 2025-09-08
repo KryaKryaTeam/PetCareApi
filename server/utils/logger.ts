@@ -81,7 +81,7 @@ export class Logger {
 				{ flag: "a" },
 			);
 		}
-		if (!isWorkflow())
+		if (fs.existsSync(path.join(__dirname, "..", "logs", "requests.log"))) {
 			fs.writeFileSync(
 				path.join(__dirname, "..", "logs", "requests.log"),
 				JSON.stringify({
@@ -94,6 +94,7 @@ export class Logger {
 				}) + "\n",
 				{ flag: "a" },
 			);
+		}
 
 		console.log("\n -" + new Date().toTimeString() + "   " + message);
 	}
