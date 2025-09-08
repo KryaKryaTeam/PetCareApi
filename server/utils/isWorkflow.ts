@@ -1,3 +1,3 @@
 export function isWorkflow() {
-	return process.env.IS_WORKFLOW === "true";
+	return process.env.IS_WORKFLOW == "true";
 }
