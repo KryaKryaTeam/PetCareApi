@@ -48,7 +48,7 @@ router.delete(
 	async (req, res) => {
 		const { id } = req.params;
 
-		await BreedService.deleteOne(id);
+		await BreedService.deleteOne(id, false);
 
 		res.json({ message: "OK!" }).status(200);
 	},

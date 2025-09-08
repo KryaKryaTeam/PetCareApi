@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 import type { ObjectId } from "mongoose";
 import type { Document } from "mongoose";
 
+export type animal_gender = "male" | "female" | "unknown";
+export type animal_status = "active" | "archived";
+
 export interface IAnimal {
   name: string;
   weight: number;
@@ -13,11 +16,11 @@ export interface IAnimal {
   avatar: string;
   documents?: string[];
   injections?: string[];
-  gender: "male" | "female" | "unknown";
+  gender: animal_gender;
   chipId?: string;
   registeredAt: Date;
   notes?: string[];
-  status: "active" | "archived";
+  status: animal_status;
 }
 
 export interface IAnimalModel extends Document {
@@ -31,11 +34,11 @@ export interface IAnimalModel extends Document {
   avatar: string;
   documents?: ObjectId[];
   injections?: ObjectId[];
-  gender: "male" | "female" | "unknown";
+  gender: animal_gender;
   chipId?: string;
   registeredAt: Date;
   notes?: ObjectId[];
-  status: "active" | "archived";
+  status: animal_status;
 }
 
 const AnimalSchema = new mongoose.Schema<IAnimalModel>({
@@ -60,7 +63,7 @@ const AnimalSchema = new mongoose.Schema<IAnimalModel>({
   registeredAt: { type: Date, default: Date.now() },
   isSterilized: { type: Boolean, required: true, default: false },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  avatar: { type: String, required: true, unique: true },
+  avatar: { type: String, required: true, default: "none" },
   notes: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Note" }],
   status: { type: String, enum: ["active", "archived"], default: "active" },
 });

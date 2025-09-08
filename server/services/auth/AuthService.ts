@@ -32,8 +32,8 @@ export class AuthServiceSelf {
 			familyId,
 		);
 
-		user.sessions.splice(
-			user.sessions.findIndex((v) => v.ip == ip),
+		user.sessions = user.sessions.splice(
+			user.sessions.findIndex((v) => v.ip == ip && v.device == device),
 			1,
 		);
 		user.sessions.push(session);
@@ -92,7 +92,7 @@ export class AuthServiceSelf {
 		globalLogger.logger().info(`Logout started for user ${session.user}`);
 		const user = await User.findById(session.user);
 		if (!user) throw ApiError.badrequest("user to logout undefined");
-		user.sessions.splice(
+		user.sessions = user.sessions.splice(
 			user.sessions.findIndex((v) => v.sessionId == session.sessionId),
 			1,
 		);

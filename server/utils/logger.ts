@@ -2,6 +2,7 @@ import path from "path";
 import { generateId } from "./id_generateor";
 import fs from "fs";
 import { isDevMode } from "./isDevMode";
+import { isWorkflow } from "./isWorkflow";
 
 export class Logger {
 	endpoint: string;
@@ -25,10 +26,12 @@ export class Logger {
 			);
 		}
 
-		if (!fs.existsSync(path.join(__dirname, "..", "logs")))
-			fs.mkdirSync(path.join(__dirname, "..", "logs"));
-		if (!fs.existsSync(path.join(__dirname, "..", "logs", "requests.log")))
-			fs.appendFileSync(path.join(__dirname, "..", "logs", "requests.log"), "");
+		if (!isWorkflow()) {
+			if (!fs.existsSync(path.join(__dirname, "..", "logs")))
+				fs.mkdirSync(path.join(__dirname, "..", "logs"));
+			if (!fs.existsSync(path.join(__dirname, "..", "logs", "requests.log")))
+				fs.appendFileSync(path.join(__dirname, "..", "logs", "requests.log"), "");
+		}
 
 		this.info("Endpoint: " + this.endpoint);
 
@@ -78,18 +81,20 @@ export class Logger {
 				{ flag: "a" },
 			);
 		}
-		fs.writeFileSync(
-			path.join(__dirname, "..", "logs", "requests.log"),
-			JSON.stringify({
-				level,
-				data: new Date(),
-				message,
-				requestId: this.requestId,
-				endpoint: this.endpoint,
-				service: this.service || "none",
-			}) + "\n",
-			{ flag: "a" },
-		);
+		if (fs.existsSync(path.join(__dirname, "..", "logs", "requests.log"))) {
+			fs.writeFileSync(
+				path.join(__dirname, "..", "logs", "requests.log"),
+				JSON.stringify({
+					level,
+					data: new Date(),
+					message,
+					requestId: this.requestId,
+					endpoint: this.endpoint,
+					service: this.service || "none",
+				}) + "\n",
+				{ flag: "a" },
+			);
+		}
 
 		console.log("\n -" + new Date().toTimeString() + "   " + message);
 	}
@@ -108,7 +113,10 @@ class GlobalLogger {
 
 	set(logger: Logger): void {
 		this.logger_ = logger;
-		this.logger_.start();
+
+		if (this.logger_ && this.logger_.requestId != logger.requestId) {
+			this.logger_.start();
+		}
 	}
 }
 
