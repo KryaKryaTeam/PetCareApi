@@ -12,6 +12,7 @@ jobs:
   env:
    DEV_MODE: "false"
    TEST_RUN: "true"
+   IS_WORKFLOW: "true"
    GOOGLE_CLIENT_ID: "${{secrets.GOOGLE_CLIENT_ID}}"
    FRONTEND_URL: "http://localhost:5127"
    COOKIE_DOMAIN: "localhost"
