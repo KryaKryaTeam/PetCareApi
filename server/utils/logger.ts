@@ -108,7 +108,10 @@ class GlobalLogger {
 
 	set(logger: Logger): void {
 		this.logger_ = logger;
-		this.logger_.start();
+
+		if (this.logger_ && this.logger_.requestId != logger.requestId) {
+			this.logger_.start();
+		}
 	}
 }
 

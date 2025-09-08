@@ -66,9 +66,11 @@ app.use((err, req, res, _next) => {
 async function connect() {
 	try {
 		console.log("TRY TO CONNECT!");
-		await mongoose.connect(process.env.MONGO_URL || "").then(() => {
-			console.log("CONNECTED TO DB!");
-		});
+		await mongoose
+			.connect(process.env.MONGO_URL || "", { dbName: "main", autoIndex: true })
+			.then(() => {
+				console.log("CONNECTED TO DB!");
+			});
 	} catch (err) {
 		console.log(err);
 		throw "CONNECT TO DB ERROR!";

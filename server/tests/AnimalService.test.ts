@@ -22,10 +22,10 @@ let _breed2;
 config();
 
 beforeEach(async () => {
-	globalLogger.set(new Logger("/"));
+	new Logger("/");
 	await mongoose.connect(
 		"mongodb://admin:password12341234@mongo:27017/pet_tracker?authSource=admin",
-		{ dbName: "test" },
+		{ dbName: "test", autoIndex: true },
 	);
 
 	animaltype = await AnimalTypeService.createNew("cat", faker.image.avatar());
@@ -55,6 +55,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
 	await mongoose.connection.db.dropDatabase();
+	globalLogger.logger().end();
 });
 
 test("Check create new function: success case", async () => {

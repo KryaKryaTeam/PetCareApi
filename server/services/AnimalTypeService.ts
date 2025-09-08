@@ -3,6 +3,7 @@ import { ApiError } from "../error/ApiError";
 import AnimalType, { IAnimalTypeModel } from "../models/AnimalType";
 import { BreedService } from "./BreedService";
 import { globalLogger } from "../utils/logger";
+import { IBreedModel } from "../models/Breed";
 
 export class AnimalTypeService {
 	static async createNew(
@@ -11,6 +12,11 @@ export class AnimalTypeService {
 	): Promise<IAnimalTypeModel> {
 		globalLogger.logger().setService("animal_type_service");
 		globalLogger.logger().info("Animal type is created");
+		const check = await AnimalType.findOne({ name });
+		if (check)
+			throw ApiError.badrequest(
+				"Validation error an animal type with the same name is already created!",
+			);
 		const animal_type = new AnimalType({ name, icon });
 		await animal_type.save();
 
@@ -23,15 +29,20 @@ export class AnimalTypeService {
 
 		globalLogger.logger().info("Breeds deletion is starts");
 		const pr = Promise.all(
-			animal_type.breeds.map((breed) => BreedService.deleteOne(breed)),
+			animal_type.breeds.map(async (breed) => {
+				await BreedService.deleteOne(breed, true);
+			}),
 		);
 		await pr;
 
-		await animal_type.deleteOne();
+		await AnimalType.findByIdAndDelete(animal_type._id);
 		globalLogger.logger().info("Animal type is deleted");
 		return 0;
 	}
-	static async addBreedToAnimalType(animalTypeName: string, breedId: string) {
+	static async addBreedToAnimalType(
+		animalTypeName: string,
+		breedId: Types.ObjectId,
+	) {
 		globalLogger.logger().setService("animal_type_service");
 		const animal_type = await this.findByName(animalTypeName);
 
@@ -40,23 +51,31 @@ export class AnimalTypeService {
 
 		globalLogger
 			.logger()
-			.info(`breed ${breedId} is added to animal type ${animalTypeName}`);
+			.info(`breed ${breed._id} is added to animal type ${animalTypeName}`);
 		await animal_type.save();
 	}
 	static async deleteBreedFromAnimalType(
 		animalTypeName: string,
-		breedId: string,
+		breedId: Types.ObjectId,
 	) {
 		globalLogger.logger().setService("animal_type_service");
 		const animal_type = await this.findByName(animalTypeName);
 
-		const breed = await BreedService.findById(breedId);
-		animal_type.breeds = animal_type.breeds.filter((a) => a != breed.id);
+		console.log(animal_type.breeds);
+
+		const breed = (await BreedService.findById(breedId)) as IBreedModel;
+
+		animal_type.breeds = animal_type.breeds.filter((a) => !a.equals(breed.id));
+
+		console.log(animal_type.breeds);
+
 		await animal_type.save();
 
 		globalLogger
 			.logger()
-			.info(`breed ${breedId} is deleted from animal type ${animalTypeName}`);
+			.info(
+				`The breed with id ${breedId} is deleted from ${animal_type.name} now breeds length is ${animal_type.breeds.length}`,
+			);
 
 		return animal_type;
 	}
@@ -68,9 +87,11 @@ export class AnimalTypeService {
 	}
 	static async findByName(name: string) {
 		globalLogger.logger().setService("animal_type_service");
-		const animal_type = (await AnimalType.findOne({ name })).populate("breeds");
+		const animal_type = await AnimalType.findOne({ name })
+			.populate("breeds")
+			.exec();
 		if (!animal_type)
-			throw ApiError.undefined("Animal type with this name is undefined!");
+			throw ApiError.badrequest("Animal type with this name is undefined!");
 		globalLogger.logger().info(`get animal type by name ${name} is success`);
 		return animal_type;
 	}
@@ -78,7 +99,7 @@ export class AnimalTypeService {
 		globalLogger.logger().setService("animal_type_service");
 		const animal_type = await AnimalType.findById(id).populate("breeds");
 		if (!animal_type)
-			throw ApiError.undefined("Animal type with this id is undefined!");
+			throw ApiError.badrequest("Animal type with this id is undefined!");
 		globalLogger.logger().info(`get animal type by id ${id} is success`);
 		return animal_type;
 	}

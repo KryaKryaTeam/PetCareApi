@@ -1,9 +1,9 @@
-import { Types } from "mongoose";
 import { ApiError } from "../error/ApiError";
 import Breed, { IBreedModel, IRecomendation } from "../models/Breed";
 import { PlannedInjection } from "../models/Injection";
 import { AnimalTypeService } from "./AnimalTypeService";
 import { globalLogger } from "../utils/logger";
+import { Types } from "mongoose";
 
 export class BreedService {
 	static async createNew(name, animalTypeName): Promise<IBreedModel> {
@@ -13,21 +13,22 @@ export class BreedService {
 		const breed = new Breed({ name, animalType: animal_type.id });
 		await breed.save();
 
-		AnimalTypeService.addBreedToAnimalType(animalTypeName, breed.id);
+		await AnimalTypeService.addBreedToAnimalType(animalTypeName, breed.id);
 
 		return breed;
 	}
-	static async deleteOne(breedId): Promise<true> {
+	static async deleteOne(breedId, toDeleteAnimalType: boolean): Promise<true> {
 		globalLogger.logger().setService("breed_service");
 
 		const breed = await Breed.findById(breedId);
 		if (!breed) throw ApiError.badrequest("breed is undefined");
 
 		const animal_type = await AnimalTypeService.findById(breed.animalType);
-		await AnimalTypeService.deleteBreedFromAnimalType(
-			animal_type.name,
-			breed.id,
-		);
+		if (!toDeleteAnimalType)
+			await AnimalTypeService.deleteBreedFromAnimalType(
+				animal_type.name,
+				breed.id,
+			);
 		await PlannedInjection.deleteMany({ breed: breed._id });
 
 		await breed.deleteOne();
@@ -35,7 +36,7 @@ export class BreedService {
 		return true;
 	}
 	static async addRecomendationToBreed(
-		breedId: string,
+		breedId: Types.ObjectId | string,
 		recomendation: IRecomendation,
 	): Promise<IBreedModel> {
 		globalLogger.logger().setService("breed_service");
@@ -49,7 +50,7 @@ export class BreedService {
 		return breed;
 	}
 	static async deleteRecomendationFromBreed(
-		breedId: string,
+		breedId: Types.ObjectId | string,
 		recomendation_name: string,
 	): Promise<IBreedModel> {
 		globalLogger.logger().setService("breed_service");
@@ -65,7 +66,9 @@ export class BreedService {
 				"recomendation with this name is undefined in this breed",
 			);
 
-		breed.recomendations.splice(index, 1);
+		breed.recomendations = breed.recomendations.filter(
+			(a) => a.name != recomendation_name,
+		);
 		await breed.save();
 
 		return breed;
@@ -74,16 +77,17 @@ export class BreedService {
 		globalLogger.logger().setService("breed_service");
 
 		const breed = await Breed.findOne({ name: breedName });
-		if (!breed) throw ApiError.badrequest("Breed with this name id undefined!");
+		if (!breed) throw ApiError.badrequest("Breed with this name is undefined!");
 		return breed;
 	}
-	static async findById(
-		breedId: string | Types.ObjectId,
-	): Promise<IBreedModel> {
+	static async findById(breedId: Types.ObjectId): Promise<IBreedModel> {
 		globalLogger.logger().setService("breed_service");
 
 		const breed = await Breed.findById(breedId);
+
 		if (!breed) throw ApiError.badrequest("Breed with this id is undefined!");
+
+		globalLogger.logger().info(`Breed ${breedId} is finded: ${breed.name}`);
 		return breed;
 	}
 	static async getAll() {
