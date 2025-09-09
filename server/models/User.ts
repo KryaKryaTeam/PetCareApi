@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
 import type { Document } from "mongoose";
 
+export interface IAuthSource<T = unknown> {
+	provider: string;
+	data: T;
+}
+
 export interface IUserSession {
-	provider: "self" | "google";
+	source: string;
 	sessionId: string;
 	familyId: string;
 	user: mongoose.Types.ObjectId;
@@ -15,9 +20,7 @@ export interface IUserSession {
 export interface IUser {
 	username: string;
 	email: string;
-	isOAuth: boolean;
-	passwordHash?: string;
-	googleId?: string;
+	authSources: IAuthSource[];
 	animals?: string[];
 	avatar?: string;
 	sessions?: IUserSession[];
@@ -29,9 +32,7 @@ export interface IUser {
 export interface IUserModel extends Document {
 	username: string;
 	email: string;
-	isOAuth: boolean;
-	passwordHash?: string;
-	googleId?: string;
+	authSources: IAuthSource[];
 	animals?: string[];
 	avatar?: string;
 	sessions?: IUserSession[];
@@ -42,7 +43,7 @@ export interface IUserModel extends Document {
 
 const SessionSchema = new mongoose.Schema<IUserSession>(
 	{
-		provider: { type: String, required: true, enum: ["google", "self"] },
+		source: { type: String, required: true },
 		sessionId: { type: String, required: true },
 		familyId: { type: String, required: true },
 		device: { type: String },
@@ -53,6 +54,18 @@ const SessionSchema = new mongoose.Schema<IUserSession>(
 	},
 	{ _id: false },
 );
+
+const AuthSourceSchema = new mongoose.Schema<IAuthSource>({
+	provider: {
+		type: String,
+		required: true,
+		unique: true,
+	},
+	data: {
+		type: mongoose.SchemaTypes.Mixed,
+		required: true,
+	},
+});
 
 export const UserSchema = new mongoose.Schema<IUserModel>({
 	username: {
@@ -70,9 +83,7 @@ export const UserSchema = new mongoose.Schema<IUserModel>({
 		lowercase: true,
 		match: /^\S+@\S+\.\S+$/,
 	},
-	passwordHash: { type: String },
-	isOAuth: { type: Boolean, default: false },
-	googleId: { type: String, unique: true, sparse: true },
+	authSources: [{ type: AuthSourceSchema }],
 	animals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Animal" }],
 	avatar: { type: String, default: "%backend%/images/person_baseicon.png" },
 	sessions: [SessionSchema],

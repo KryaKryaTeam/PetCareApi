@@ -26,47 +26,75 @@
         }
       }
     },
-    "/user/login/self": {
+    "/user/login": {
       "post": {
         "tags": [
           "Auth"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         },
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SelfLoginSchema"
-              }
+              "$ref": "#/components/schemas/something"
             }
           }
         }
       }
     },
-    "/user/register/self": {
+    "/user/register": {
       "post": {
         "tags": [
           "Auth"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         },
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SelfRegisterSchema"
-              }
+              "$ref": "#/components/schemas/something"
             }
           }
         }
@@ -142,39 +170,6 @@
             "bearerAuth": []
           }
         ]
-      }
-    },
-    "/user/*#swagger.tags=[Auth]*/login/google": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "user-agent",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "accessToken": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/user/sesssion/close/{session}": {
@@ -2367,6 +2362,18 @@
           "avatar",
           "gender",
           "chipId"
+        ]
+      },
+      "Something": {
+        "type": "object",
+        "properties": {
+          "something": {
+            "type": "string",
+            "example": "something"
+          }
+        },
+        "required": [
+          "something"
         ]
       }
     }

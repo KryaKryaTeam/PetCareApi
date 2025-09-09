@@ -30,6 +30,7 @@ if not exist "%ENV_FILE%" (
 
 call :RandStr "RAND1"
 call :RandStr "RAND2"
+call :RandStr "RAND3"
 
 :: Call subroutines to collect env values
 call :EnsureEnv "GOOGLE_CLIENT_ID"
@@ -37,6 +38,7 @@ call :EnsureEnv "FRONTEND_URL"
 call :EnsureEnvDefault "COOKIE_DOMAIN" "localhost"
 call :EnsureEnvDefault "JWT_SECRET_ACCESS" %RAND1%
 call :EnsureEnvDefault "JWT_SECRET_REFRESH" %RAND2%
+call :EnsureEnvDefault "JWT_SECRET_CODE" %RAND3%
 call :EnsureEnvDefault "SESSION_EXP_TIME" "10800000"
 call :EnsureEnvDefault "JWT_ACCESS_EXP" "3h"
 call :EnsureEnvDefault "JWT_REFRESH_EXP" "3d"

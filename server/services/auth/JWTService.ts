@@ -129,4 +129,14 @@ export class JWTService {
 		const decode_ = decode(token) as JwtPayload & IJWTPayload;
 		this.checkBan(decode_.familyId);
 	}
+	static async signCode(code) {
+		const signed = sign({ code }, process.env.JWT_SECRET_CODE, {
+			expiresIn: "5m",
+		});
+		return signed;
+	}
+	static async verifyCode(jwt) {
+		const decode = verify(jwt, process.env.JWT_SECRET_CODE) as { code: string };
+		return decode.code;
+	}
 }

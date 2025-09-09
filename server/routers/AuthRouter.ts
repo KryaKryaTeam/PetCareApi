@@ -1,92 +1,83 @@
 import express from "express";
 import { AuthServiceSelf } from "../services/auth/AuthService";
 import { checkAuth } from "../middleware/checkAuth";
-import { body, cookie, param } from "express-validator";
+import { cookie, param, query } from "express-validator";
 import { validationMiddleware } from "../middleware/validationMiddleware";
+import { master_provider } from "../services/auth/providers/Provider";
 const router = express.Router();
 
 router.post(
 	// #swagger.tags = ["Auth"]
-	/* #swagger.requestBody = {
+	/*  #swagger.requestBody = {
             required: true,
             content: {
                 "application/json": {
-                    schema: {
-                        $ref: "#/components/schemas/SelfLoginSchema"
-                    }
-                }
+					$ref: "#/components/schemas/something"
+				}
             }
         } 
     */
-	"/login/self",
-	body("username").notEmpty().isLength({ min: 3, max: 100 }),
-	body("password")
-		.notEmpty()
-		.isLength({ min: 8, max: 100 })
-		.matches(
-			// eslint-disable-next-line no-useless-escape
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/,
-		),
+	"/login",
+	query("provider").custom(async (value) =>
+		master_provider.isAvalibleProvider(value),
+	),
 	validationMiddleware,
 	async (req, res) => {
-		const { username, password } = req.body;
+		const data = req.body;
 		const ip = req.ip;
 		const userAgent = req.headers["user-agent"];
+		const { provider } = req.query;
 
-		const result = await AuthServiceSelf.login(username, password, userAgent, ip);
-		res.cookie("refresh", result.refreshToken, {
-			domain: process.env.COOKIE_DOMAIN,
-			sameSite: "lax",
+		const cookieCode = await AuthServiceSelf.login(data, userAgent, ip, provider);
+
+		res.cookie("code", cookieCode, {
 			httpOnly: true,
+			sameSite: "lax",
 			secure: true,
+			domain: process.env.COOKIE_DOMAIN,
+			expires: new Date(Date.now() + 100 * 60 * 5),
 		});
-		res.status(200).json({ authorization: result.accessToken });
+		res.status(200).json({ message: "Ok!" });
 	},
 );
 
 router.post(
 	// #swagger.tags = ["Auth"]
-	/* #swagger.requestBody = {
+	/*  #swagger.requestBody = {
             required: true,
             content: {
                 "application/json": {
-                    schema: {
-                        $ref: "#/components/schemas/SelfRegisterSchema"
-                    }
-                }
+					$ref: "#/components/schemas/something"
+				}
             }
         } 
     */
-	"/register/self",
-	body("username").notEmpty().isLength({ min: 3, max: 100 }),
-	body("password")
-		.notEmpty()
-		.isLength({ min: 8, max: 100 })
-		.matches(
-			// eslint-disable-next-line no-useless-escape
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/,
-		),
-	body("email").notEmpty().isEmail(),
+	"/register",
+	query("provider").custom(async (value) =>
+		master_provider.isAvalibleProvider(value),
+	),
 	validationMiddleware,
 	async (req, res) => {
-		const { username, email, password } = req.body;
+		const data = req.body;
 		const ip = req.ip;
 		const userAgent = req.headers["user-agent"];
+		const { provider } = req.query;
 
-		const result = await AuthServiceSelf.register(
-			username,
-			password,
-			email,
+		const cookieCode = await AuthServiceSelf.register(
+			data,
 			userAgent,
 			ip,
+			provider,
 		);
-		res.cookie("refresh", result.refreshToken, {
-			domain: process.env.COOKIE_DOMAIN,
-			sameSite: "lax",
+
+		res.cookie("code", cookieCode, {
 			httpOnly: true,
+			sameSite: "lax",
 			secure: true,
+			domain: process.env.COOKIE_DOMAIN,
+			expires: new Date(Date.now() + 100 * 60 * 5),
 		});
-		res.status(200).json({ authorization: result.accessToken });
+		res.status(200).json({ message: "Ok!" });
 	},
 );
 
@@ -123,31 +114,31 @@ router.post(
 	},
 );
 
-router.post(
-	// #swagger.tags = ["Auth"]
-	"/login/google",
-	body("accessToken").notEmpty().isJWT(),
-	validationMiddleware,
-	async (req, res) => {
-		const { accessToken } = req.body;
-		const ip = req.ip;
-		const userAgent = req.headers["user-agent"];
+// router.post(
+// 	// #swagger.tags = ["Auth"]
+// 	"/login/google",
+// 	body("accessToken").notEmpty().isJWT(),
+// 	validationMiddleware,
+// 	async (req, res) => {
+// 		const { accessToken } = req.body;
+// 		const ip = req.ip;
+// 		const userAgent = req.headers["user-agent"];
 
-		const result = await AuthServiceSelf.loginUsingGoogle(
-			accessToken,
-			userAgent,
-			ip,
-		);
+// 		const result = await AuthServiceSelf.loginUsingGoogle(
+// 			accessToken,
+// 			userAgent,
+// 			ip,
+// 		);
 
-		res.cookie("refresh", result.refreshToken, {
-			domain: process.env.COOKIE_DOMAIN,
-			sameSite: "lax",
-			httpOnly: true,
-			secure: true,
-		});
-		res.status(200).json({ authorization: result.accessToken });
-	},
-);
+// 		res.cookie("refresh", result.refreshToken, {
+// 			domain: process.env.COOKIE_DOMAIN,
+// 			sameSite: "lax",
+// 			httpOnly: true,
+// 			secure: true,
+// 		});
+// 		res.status(200).json({ authorization: result.accessToken });
+// 	},
+// );
 
 router.get(
 	// #swagger.tags = ["Auth"]

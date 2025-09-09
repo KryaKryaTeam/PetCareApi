@@ -13,7 +13,7 @@ export class SessionService {
 	static generateNew(
 		device: string,
 		ip: string,
-		provider: "google" | "self",
+		source: string,
 		user: Types.ObjectId,
 		familyId: string,
 	) {
@@ -22,7 +22,7 @@ export class SessionService {
 		const session: IUserSession = {
 			sessionId: SessionService.generateSessionId(),
 			familyId,
-			provider,
+			source,
 			createdAt: new Date(),
 			device,
 			ip,

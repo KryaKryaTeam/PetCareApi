@@ -1,91 +1,50 @@
 import { ApiError } from "../../error/ApiError";
 import User, { IUserSession } from "../../models/User";
-import { HashService } from "./HashService";
 import { IJWTPair, JWTService } from "./JWTService";
-import { SessionService } from "./SessionService";
-import { OAuth2Client } from "google-auth-library";
-import { GoogleTokenBanService } from "./GoogleTokenBanService";
 import { globalLogger } from "../../utils/logger";
+import { master_provider } from "./providers/Provider";
+
+/* TODO:
+	- add refresh password function ^
+	- add mails integration
+	 make mail templates ( in waiting for Bogdan )
+	 add google gmail api integration -> changing to mailgun maybe
+	 how to write tests for this? >:
+	- separate login with google provider
+	- make ability to use one login and register endpoint with query params ( in this way we can add some more providers in future )
+	 use ?provider="avalible_provider" to select provider
+	 add some body pattern for each provider
+	 separate auth service to different providers
+	- make 2fa with auths codes in mails
+	 add mail check (code or generated link)
+	- add root user
+	-rewrite router validations to ajv
+*/
 
 export class AuthServiceSelf {
 	static async login(
-		username: string,
-		password: string,
+		data: unknown[],
 		device: string,
 		ip: string,
-	): Promise<IJWTPair> {
+		provider: string,
+	): Promise<string> {
 		globalLogger.logger().setService("auth_service");
-		globalLogger.logger().info(`Login started for ${username}`);
-		const user = await User.findOne({ username });
+		globalLogger.logger().info(`Login started using ${provider}`);
+		const provider_class = master_provider.getProvider(provider);
 
-		if (!user) throw ApiError.badrequest("user with this username is undefined");
-
-		if (!HashService.check(user.passwordHash, password))
-			throw ApiError.unauthorized("password is incorrect");
-
-		const familyId = JWTService.generateFamilyId();
-		const session = SessionService.generateNew(
-			device,
-			ip,
-			"self",
-			user.id,
-			familyId,
-		);
-
-		user.sessions = user.sessions.splice(
-			user.sessions.findIndex((v) => v.ip == ip && v.device == device),
-			1,
-		);
-		user.sessions.push(session);
-
-		user.lastLogin = new Date();
-
-		await user.save();
-		globalLogger.logger().info(`Login completed for ${username}`);
-
-		const pair = JWTService.generatePair(session, familyId);
-
-		return pair;
+		return (await provider_class.login(data, device, ip)) as string;
 	}
 	static async register(
-		username: string,
-		password: string,
-		email: string,
+		data: unknown[],
 		device: string,
 		ip: string,
-	): Promise<IJWTPair> {
+		provider: string,
+	): Promise<string> {
 		globalLogger.logger().setService("auth_service");
-		globalLogger.logger().info(`Registration started for ${username}`);
-		const username_valid = await User.findOne({ username });
-		const email_valid = await User.findOne({ email });
-		if (username_valid || email_valid)
-			throw ApiError.badrequest(
-				"user with this username or email is already created",
-			);
+		globalLogger.logger().info(`Registration started using ${provider}`);
+		const provider_class = master_provider.getProvider(provider);
 
-		const hash = HashService.hash(password);
-		const user = new User({ username, passwordHash: hash, email });
-
-		const familyId = JWTService.generateFamilyId();
-
-		const session = SessionService.generateNew(
-			device,
-			ip,
-			"self",
-			user.id,
-			familyId,
-		);
-
-		user.sessions.splice(
-			user.sessions.findIndex((v) => v.ip == ip),
-			1,
-		);
-		user.sessions.push(session);
-		await user.save();
-		globalLogger.logger().info(`Registration completed for ${username}`);
-
-		const pair = JWTService.generatePair(session, familyId);
-		return pair;
+		return (await provider_class.register(data, device, ip)) as string;
 	}
 	static async logout(session: IUserSession) {
 		globalLogger.logger().setService("auth_service");
@@ -148,101 +107,5 @@ export class AuthServiceSelf {
 		if (!user) throw ApiError.badrequest("user undefined");
 		globalLogger.logger().info(`Get all sessions completed for user ${userId}`);
 		return user.sessions;
-	}
-	static async loginUsingGoogle(
-		googleAccessToken: string,
-		device: string,
-		ip: string,
-	) {
-		globalLogger.logger().setService("auth_service");
-		globalLogger.logger().info(`Google login started`);
-		await GoogleTokenBanService.checkBan(googleAccessToken);
-		const client: OAuth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-		const ticket = await client.verifyIdToken({
-			idToken: googleAccessToken,
-			audience: process.env.GOOGLE_CLIENT_ID,
-		});
-		client.credentials.access_token = googleAccessToken;
-
-		const profile = ticket.getPayload();
-
-		if (!profile.email_verified)
-			throw ApiError.unauthorized("Need account with verified email");
-
-		const user_ = await User.findOne({ email: profile.email });
-		if (!user_) {
-			const user = new User({
-				username: profile.name,
-				avatar: profile.picture,
-				email: profile.email,
-				isOAuth: true,
-				googleId: profile.sub,
-			});
-
-			const familyId = JWTService.generateFamilyId();
-
-			const session = SessionService.generateNew(
-				device,
-				ip,
-				"google",
-				user.id,
-				familyId,
-			);
-
-			await GoogleTokenBanService.banToken(googleAccessToken, session.sessionId);
-
-			user.sessions.splice(
-				user.sessions.findIndex((v) => v.ip == ip),
-				1,
-			);
-			user.sessions.push(session);
-
-			user.lastLogin = new Date();
-
-			await user.save();
-			globalLogger
-				.logger()
-				.info(`Google login completed for new user ${profile.email}`);
-
-			const pair = JWTService.generatePair(session, familyId);
-			return pair;
-		} else {
-			if (!user_.isOAuth)
-				throw ApiError.unauthorized(
-					"OAuth authorization is not allowed for this account. Use password!",
-				);
-			if (user_.googleId != profile.sub)
-				throw ApiError.unauthorized("token not allowed");
-
-			const familyId = JWTService.generateFamilyId();
-
-			const session = SessionService.generateNew(
-				device,
-				ip,
-				"google",
-				user_.id,
-				familyId,
-			);
-
-			await GoogleTokenBanService.banToken(googleAccessToken, session.sessionId);
-
-			user_.sessions.splice(
-				user_.sessions.findIndex((v) => v.ip == ip),
-				1,
-			);
-			user_.sessions.push(session);
-
-			user_.lastLogin = new Date();
-
-			await user_.save();
-			globalLogger
-				.logger()
-				.info(`Google login completed for existing user ${profile.email}`);
-
-			const pair = JWTService.generatePair(session, familyId);
-
-			return pair;
-		}
 	}
 }

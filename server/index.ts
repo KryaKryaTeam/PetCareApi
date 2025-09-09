@@ -12,6 +12,8 @@ import path from "node:path";
 import { AttachLogger } from "./middleware/AttachLogger";
 // import "./types/express/index";
 import { isDevMode } from "./utils/isDevMode";
+import { master_provider } from "./services/auth/providers/Provider";
+import { SelfProvider } from "./services/auth/providers/SelfProvider";
 
 config();
 
@@ -78,6 +80,9 @@ async function connect() {
 }
 
 connect();
+
+master_provider.addProvider(new SelfProvider(), "self");
+master_provider.addProvider(new SelfProvider(), "self2");
 
 app.listen(process.env.PORT || 3000, () => {
 	console.log("Server run on port ", process.env.PORT || 3000);
