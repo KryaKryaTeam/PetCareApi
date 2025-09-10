@@ -27,7 +27,10 @@ services:
    - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
    - FRONTEND_URL=${FRONTEND_URL}
    - COOKIE_DOMAIN=${COOKIE_DOMAIN}
+   - MAILGUN_KEY=${MAILGUN_KEY}
+   - MAILGUN_DOMAIN=${MAILGUN_DOMAIN}
    - LOKI_HOST=http://grafana-loki:3100
+   - JWT_SECRET_CODE=${JWT_SECRET_CODE}
   command: sh -c "if [ "$TEST_RUN" = "false" ]; then if [ "$DEV_MODE" = "false" ]; then bun start; else bun run swagger && bun run dev; fi; else bun run test; fi"
  mongo:
   image: mongodb/mongodb-community-server:6.0-ubi8

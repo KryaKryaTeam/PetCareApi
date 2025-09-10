@@ -38,6 +38,7 @@ export class SelfProvider extends Provider {
 				"User is not have auth source for this provider: self",
 			);
 
+		console.log(authSource.data.hash, password);
 		const hash_check = await HashService.check(authSource.data.hash, password);
 		if (!hash_check) throw ApiError.badrequest("Password is inccorect");
 
@@ -52,7 +53,7 @@ export class SelfProvider extends Provider {
 		const tokens = await JWTService.generatePair(session, familyId);
 		user.sessions = [...user.sessions, session];
 
-		const code = await CodeService.createCode(tokens);
+		const code = await CodeService.createCode(tokens, user.email);
 		return code;
 	}
 	async register(
@@ -83,7 +84,7 @@ export class SelfProvider extends Provider {
 		const tokens = await JWTService.generatePair(session, familyId);
 		user.sessions = [...user.sessions, session];
 
-		const code = await CodeService.createCode(tokens);
+		const code = await CodeService.createCode(tokens, user.email);
 		await user.save();
 		return code;
 	}

@@ -4,6 +4,7 @@ import ProfileRouter from "./routers/ProfileRouter";
 import BreedRouter from "./routers/BreedRouter";
 import AnimalTypeRouter from "./routers/AnimalTypeRouter";
 import AnimalRouter from "./routers/AnimalRouter";
+import CodeRouter from "./routers/CodeRouter";
 const router: Router = express.Router();
 
 router.get("/ping", (req, res) => {
@@ -20,5 +21,6 @@ router.use("/profile", ProfileRouter);
 router.use("/breed", BreedRouter);
 router.use("/animaltype", AnimalTypeRouter);
 router.use("/animal", AnimalRouter);
+router.use("/code", CodeRouter);
 
 export { router };

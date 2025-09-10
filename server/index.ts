@@ -27,6 +27,10 @@ console.log(
 	process.env.SWAGGER_HOST,
 	"\n   - SWAGGER_SCHEMA:",
 	process.env.SWAGGER_SCHEMA,
+	"\n   - MAILGUN_KEY:",
+	process.env.MAILGUN_KEY,
+	"\n   - MAILGUN_DOMAIN:",
+	process.env.MAILGUN_DOMAIN,
 );
 
 if (process.env.DEV_MODE) {
